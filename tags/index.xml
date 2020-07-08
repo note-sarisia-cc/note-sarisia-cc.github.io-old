@@ -6,9 +6,73 @@
     <description>Recent content in Tags on NOTE.SARISIA.CC</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Mon, 06 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Docker</title>
+      <link>https://note.sarisia.cc/tags/docker/</link>
+      <pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GitHub Actions</title>
+      <link>https://note.sarisia.cc/tags/github-actions/</link>
+      <pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/github-actions/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LaTeX</title>
+      <link>https://note.sarisia.cc/tags/latex/</link>
+      <pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/latex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://note.sarisia.cc/tags/python/</link>
+      <pubDate>Mon, 29 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GitHub</title>
+      <link>https://note.sarisia.cc/tags/github/</link>
+      <pubDate>Thu, 25 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/github/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Go</title>
+      <link>https://note.sarisia.cc/tags/go/</link>
+      <pubDate>Sun, 21 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WSL2</title>
+      <link>https://note.sarisia.cc/tags/wsl2/</link>
+      <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/wsl2/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

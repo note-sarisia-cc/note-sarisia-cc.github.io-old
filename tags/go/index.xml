@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on NOTE.SARISIA.CC</title>
+    <link>https://note.sarisia.cc/tags/go/</link>
+    <description>Recent content in Go on NOTE.SARISIA.CC</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 21 Jun 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://note.sarisia.cc/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go Module Mirror から壊れたパッケージが落ちてくる</title>
+      <link>https://note.sarisia.cc/entry/go-broken-mirror/</link>
+      <pubDate>Sun, 21 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/go-broken-mirror/</guid>
+      <description>TL;DR パッケージのメンテナがリリースを間違えるとミラーから永遠に壊れたパッケージが落ちてくるのでユーザーは気をつけよう パッケージをリリースする人</description>
+    </item>
+    
+  </channel>
+</rss>

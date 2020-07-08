@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on NOTE.SARISIA.CC</title>
+    <link>https://note.sarisia.cc/tags/python/</link>
+    <description>Recent content in Python on NOTE.SARISIA.CC</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 29 Jun 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://note.sarisia.cc/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CPython の threading を読み解く</title>
+      <link>https://note.sarisia.cc/entry/reading-cpython-threading/</link>
+      <pubDate>Mon, 29 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/reading-cpython-threading/</guid>
+      <description>概要 Python の threading モジュールは、Python インタプリタのスレッド操作の高レベルな API を提供する: threading - Thread-based parallelism - Python 3.8.3 documentation この文章では、 threading モジュールでのスレッ</description>
+    </item>
+    
+  </channel>
+</rss>

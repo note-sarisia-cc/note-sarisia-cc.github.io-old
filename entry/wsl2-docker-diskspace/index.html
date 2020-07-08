@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>WSL2 Docker が PC のディスクを圧迫する ｜ NOTE.SARISIA.CC</title>
+	
+    
+    
+    <meta name="description" content="TL;DR WSL2 の Docker はディスクをバカ食いするから手動で掃除しよう 概要 WSL2 バックエンドの Docker では、コンテナやボリューム、イメージを削除しても、ホスト (Windows) のディス" />
+    
+
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>NOTE.SARISIA.CC</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/wsl2-docker-diskspace/'>WSL2 Docker が PC のディスクを圧迫する</a></h2>
+                        <span class="date">2020.06.06</span>
+                    </div>
+                    <div class="post_content markdown">
+
+<h1 id="tl-dr">TL;DR</h1>
+
+<ul>
+<li>WSL2 の Docker はディスクをバカ食いするから手動で掃除しよう</li>
+</ul>
+
+<h1 id="概要">概要</h1>
+
+<p>WSL2 バックエンドの Docker では、コンテナやボリューム、イメージを削除しても、ホスト (Windows) のディスク容量が解放されない。</p>
+
+<h1 id="原因">原因</h1>
+
+<p>WSL2 は一度確保したディスクをホストに返さないらしい。Issue が上がっている:</p>
+
+<p><a href="https://github.com/microsoft/WSL/issues/4699" target="_blank">WSL 2 should automatically release disk space back to the host OS · Issue #4699 · microsoft/WSL</a></p>
+
+<h2 id="確認">確認</h2>
+
+<p>雑に確認してみる。</p>
+
+<p>Docker のディスクファイル (<code>%LocalAppData%\Docker\wsl\data\ext4.vhdx</code>) のサイズを確認する。</p>
+
+<ul>
+<li><p>WSL2 バックエンドを作成したばかりのまっさらな状態:</p>
+<pre><code>&gt; docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+&gt; dir
+
+    Directory: C:\Users\Sarisia\AppData\Local\Docker\wsl\data
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----          6/6/2020   7:19 PM     1016070144 ext4.vhdx</code></pre>
+<p>1016070144 B → <strong>969 MB</strong></p></li>
+
+<li><p>大きなイメージを pull した状態:</p>
+<pre><code>&gt; docker pull docker.pkg.github.com/sarisia/tex/texlive:2019-extra
+2019-extra: Pulling from sarisia/tex/texlive
+5bed26d33875: Pull complete
+f11b29a9c730: Pull complete
+930bda195c84: Pull complete
+78bf9a5ad49e: Pull complete
+5bff6f661674: Pull complete
+1e7babce469c: Pull complete
+bf656e88758e: Pull complete
+ab176992b632: Pull complete
+360f3ee99aa4: Pull complete
+Digest: sha256:f751375c5caad239d135f6aead80597c5b34aeb2b73f7e8d8ad297729c43b6d9
+Status: Downloaded newer image for docker.pkg.github.com/sarisia/tex/texlive:2019-extra
+docker.pkg.github.com/sarisia/tex/texlive:2019-extra
+&gt; docker image ls
+REPOSITORY                                  TAG                 IMAGE ID            CREATED             SIZE
+docker.pkg.github.com/sarisia/tex/texlive   2019-extra          53c218d1c0bf        8 weeks ago         1.13GB
+&gt; dir
+
+    Directory: C:\Users\Sarisia\AppData\Local\Docker\wsl\data
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----          6/6/2020   7:27 PM     2224029696 ext4.vhdx</code></pre>
+<p>2224029696 B → <strong>2121 MB</strong> (+1152 MB)</p>
+
+<p>イメージファイルが膨らんでいることが確認できる</p></li>
+
+<li><p>イメージを削除</p>
+<pre><code>&gt; docker image rm 53c218d1c0bf
+Untagged: docker.pkg.github.com/sarisia/tex/texlive:2019-extra
+Untagged: docker.pkg.github.com/sarisia/tex/texlive@sha256:f751375c5caad239d135f6aead80597c5b34aeb2b73f7e8d8ad297729c43b6d9
+Deleted: sha256:53c218d1c0bf44ef7a63d63111cbe067bd910faee6a1691ec6667e65e81e5439
+Deleted: sha256:f877802904c83a39bab53d6cb306d1d78ff697312fb98709c8cbcc6b6578b92a
+Deleted: sha256:a831a41179769eafa9c3a5c7398b121b76c01f7e781e2bfffde67c61d6c58594
+Deleted: sha256:b85b9c0c60ab67e67fa15e515463588d2315e0efe792f14539164acf3a5144fd
+Deleted: sha256:5e8b2c6dc77ceec953400743a186a5d1368f1ebee6a5b03528a47a47c83523a9
+Deleted: sha256:a2d4715ae3ad3235925b2675aab7e008adb071affc23fd8b4681b88758103200
+Deleted: sha256:1d9112746e9d86157c23e426ce87cc2d7bced0ba2ec8ddbdfbcc3093e0769472
+Deleted: sha256:efcf4a93c18b5d01aa8e10a2e3b7e2b2eef0378336456d8653e2d123d6232c1e
+Deleted: sha256:1e1aa31289fdca521c403edd6b37317bf0a349a941c7f19b6d9d311f59347502
+Deleted: sha256:c8be1b8f4d60d99c281fc2db75e0f56df42a83ad2f0b091621ce19357e19d853
+&gt; docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+&gt; dir
+
+    Directory: C:\Users\Sarisia\AppData\Local\Docker\wsl\data
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----          6/6/2020   7:30 PM     2224029696 ext4.vhdx</code></pre>
+<p>2224029696 B → <strong>2121 MB</strong> (+0 MB)</p>
+
+<p><strong>ホストのディスクが解放されていない。</strong></p></li>
+</ul>
+
+<h1 id="解決">解決</h1>
+
+<p>上の Issue の通り手動で <code>vhdx</code> を最適化するか、または一度 Docker の WSL2 バックエンドを吹き飛ばしてしまえばいい。</p>
+
+<h2 id="解決策1-vhdx-を最適化する">解決策1. <code>vhdx</code> を最適化する</h2>
+
+<p>Hyper-V が有効である必要がある: <strong>Windows 10 Pro 以上が必要</strong></p>
+
+<p>既存のコンテナやボリュームを残したまま、ディスクのサイズを縮小できる。</p>
+
+<p><code>PowerShell</code> で <code>Optimize-VHD</code> すればよい。ドキュメントは:</p>
+
+<p><a href="https://docs.microsoft.com/ja-jp/powershell/module/hyper-v/Optimize-VHD?view=win10-ps" target="_blank">Optimize-VHD (hyper-v)</a></p>
+
+<p>まず、 WSL の <code>docker-desktop-data</code> を停止するため、Windows の Docker Desktop を終了し、WSL を落とす:</p>
+<pre><code>&gt; wsl --shutdown</code></pre>
+<p>そして、Administrator の PowerShell で、Docker のディスクファイル (<code>%LocalAppData%\Docker\wsl\data\ext4.vhdx</code>) に対して <code>Optimize-VHD</code> する:</p>
+<pre><code>&gt; Optimize-VHD -Path .\ext4.vhdx -Mode full
+&gt; dir
+
+    Directory: C:\Users\Sarisia\AppData\Local\Docker\wsl\data
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----          6/6/2020   7:33 PM      989855744 ext4.vhdx</code></pre>
+<p>989855744 B → <strong>944 MB</strong> (-1177 MB)</p>
+
+<p>ディスクファイルのサイズが小さくなり、ホストのディスクが解放された。</p>
+
+<h2 id="解決策2-wsl2-バックエンドを作り直す">解決策2. WSL2 バックエンドを作り直す</h2>
+
+<p><strong>既存のコンテナやボリューム、イメージがすべて吹き飛ぶので注意！</strong></p>
+
+<p>Docker Desktop の設定で <code>User the WSL 2 based engine</code> のチェックを外し、 <code>Apply &amp; Restart</code> する:</p>
+
+<p><img src="WSL2%20Docker%20PC%20ad8f30855c0941edb68c18e04056e7f2/Untitled.png" alt="WSL2%20Docker%20PC%20ad8f30855c0941edb68c18e04056e7f2/Untitled.png" /></p>
+
+<p>チェックを外すと、Docker は WSL2 を使わなくなるものの、WSL に登録されたディストリビューションは残ったままとなる:</p>
+<pre><code>&gt; wsl --list --verbose
+  NAME                   STATE           VERSION
+* Ubuntu                 Stopped         2
+  docker-desktop-data    Stopped         2
+  docker-desktop         Stopped         2</code></pre>
+<p>ディストリビューションを削除すれば、ディスクも消える:</p>
+<pre><code>&gt; wsl --unregister docker-desktop-data
+Unregistering...
+&gt; wsl --unregister docker-desktop
+Unregistering...
+&gt; wsl --list --verbose
+  NAME      STATE           VERSION
+* Ubuntu    Running         2</code></pre>
+<p>その後、再度 Docker Desktop の設定より、チェックを入れて適用すれば、ディストリビューションが再作成される。ただし、<strong>Docker 上の全てが吹き飛ぶ</strong>。</p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/docker/">Docker</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/wsl2/">WSL2</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
