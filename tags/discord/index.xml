@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>GitHub on NOTE.SARISIA.CC</title>
-    <link>https://note.sarisia.cc/tags/github/</link>
-    <description>Recent content in GitHub on NOTE.SARISIA.CC</description>
+    <title>Discord on NOTE.SARISIA.CC</title>
+    <link>https://note.sarisia.cc/tags/discord/</link>
+    <description>Recent content in Discord on NOTE.SARISIA.CC</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://note.sarisia.cc/tags/github/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://note.sarisia.cc/tags/discord/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,15 +18,6 @@
       
       <guid>https://note.sarisia.cc/entry/actions-status-discord/</guid>
       <description>TL;DR Actions Status Discord をもっと使ってほしい 概要 GitHub Actions は GitHub にくっついている CI/CD サービスです。リポジトリにワークフローファイルを置いておくだけで勝手に実行してくれ</description>
-    </item>
-    
-    <item>
-      <title>GitHub Pages URL の挙動</title>
-      <link>https://note.sarisia.cc/entry/github-pages-url/</link>
-      <pubDate>Thu, 25 Jun 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://note.sarisia.cc/entry/github-pages-url/</guid>
-      <description>TL;DR GitHub Pages に安易にオーガニゼーションページ (ユーザーページ) とプロジェクトページを共存させると到達不可能なページが出来てしまうので注意 概要 GitHub Pages は</description>
     </item>
     
   </channel>

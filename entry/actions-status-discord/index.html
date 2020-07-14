@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>Discord に GitHub Actions の結果を通知するアクションを作った ｜ NOTE.SARISIA.CC</title>
+	
+    
+    
+    <meta name="description" content="TL;DR Actions Status Discord をもっと使ってほしい 概要 GitHub Actions は GitHub にくっついている CI/CD サービスです。リポジトリにワークフローファイルを置いておくだけで勝手に実行してくれ" />
+    
+
+    
+
+    <meta property="og:title" content="Discord に GitHub Actions の結果を通知するアクションを作った" />
+<meta property="og:description" content="TL;DR Actions Status Discord をもっと使ってほしい 概要 GitHub Actions は GitHub にくっついている CI/CD サービスです。リポジトリにワークフローファイルを置いておくだけで勝手に実行してくれ" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/actions-status-discord/" />
+<meta property="article:published_time" content="2020-07-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-15T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>NOTE.SARISIA.CC</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/actions-status-discord/'>Discord に GitHub Actions の結果を通知するアクションを作った</a></h2>
+                        <span class="date">2020.07.15</span>
+                    </div>
+                    <div class="post_content markdown"><h1 id="tldr">TL;DR</h1>
+<p><code>Actions Status Discord</code> をもっと使ってほしい</p>
+<h1 id="概要">概要</h1>
+<p><a href="https://github.com/features/actions" target="_blank" rel="noopener">GitHub Actions</a> は GitHub にくっついている CI/CD サービスです。リポジトリにワークフローファイルを置いておくだけで勝手に実行してくれますし、ソースコードと CI/CD の結果が同じ場所で管理できるので大変便利です。</p>
+<p>さて、CI/CD を組んでいると欲しくなるのが外部サービスへの通知です。GitHub Actions にはデフォルトで Webhook 通知ができますが、Slack や Discord には味気ない通知しか届きません:</p>
+<p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled.png"></p>
+<p>GitHub のデフォルト通知を用いた際の Discord 通知</p>
+<p>GitHub Actions のアクションは自由に開発・配布できるので、Slack 向けにはいい感じのアクションが存在しています:</p>
+<p><a href="https://github.com/marketplace/actions/slack-notify" target="_blank" rel="noopener">Slack Notify - GitHub Marketplace</a></p>
+<p>しかし、Discord 向けの通知アクションは存在しているものの、テキストしか投稿できなかったり、Docker アクションであったり<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>と、微妙なものしかありません。</p>
+<p>せっかく Discord は Embed スタイルの綺麗なメッセージスタイルをサポートしているので、いい感じに通知を投稿してくれるアクションを作りました<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>:</p>
+<p><a href="https://github.com/marketplace/actions/actions-status-discord" target="_blank" rel="noopener">Actions Status Discord - GitHub Marketplace</a></p>
+<h1 id="できること">できること</h1>
+<p>こんな感じの通知が一瞬で設定できます:</p>
+<p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%201.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%201.png"></p>
+<p>詳細情報を省いたこんな感じのもできます:</p>
+<p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%202.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%202.png"></p>
+<h2 id="詳細な紹介">詳細な紹介</h2>
+<p>結構好き勝手できるアクションなので、実際のワークフローと出力例を紹介します。</p>
+<ul>
+<li>
+<p>ステータス通知</p>
+<p>ステータスの成功・失敗・キャンセルによって Embed の色が変わります。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-status-discord@v1<span class="w">
+</span><span class="w">  </span><span class="k">if</span><span class="p">:</span><span class="w"> </span>always()<span class="w">
+</span><span class="w">  </span><span class="k">env</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">DISCORD_WEBHOOK</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
+</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">status</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>job.status<span class="w"> </span>}}<span class="w">
+</span></code></pre></div><p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%203.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%203.png"></p>
+<p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%204.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%204.png"></p>
+</li>
+<li>
+<p>豊富なオプション</p>
+<p>タイトルや説明文、Webhook 投稿ユーザの名前やアイコン変更など、多くのオプションを揃えました。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-status-discord@v1<span class="w">
+</span><span class="w">  </span><span class="k">if</span><span class="p">:</span><span class="w"> </span>always()<span class="w">
+</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">webhook</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
+</span><span class="w">    </span><span class="k">status</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>job.status<span class="w"> </span>}}<span class="w">
+</span><span class="w">    </span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;deploy&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">description</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Build and deploy to GitHub Pages&#34;</span><span class="w">
+</span><span class="w">    </span><span class="k">nofail</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">    </span><span class="k">nodetail</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="m">0x0000ff</span><span class="w">
+</span><span class="w">    </span><span class="k">username</span><span class="p">:</span><span class="w"> </span>GitHub<span class="w"> </span>Actions<span class="w">
+</span><span class="w">    </span><span class="k">avatar_url</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.AVATAR_URL<span class="w"> </span>}}<span class="w">
+</span></code></pre></div><p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%205.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%205.png"></p>
+<p>詳細情報を一切なくすこともできます。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-status-discord@v1<span class="w">
+</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">webhook</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
+</span><span class="w">    </span><span class="k">nodetail</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">    </span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;We did it!&#34;</span><span class="w">
+</span></code></pre></div><p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%206.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%206.png"></p>
+</li>
+<li>
+<p>イベントに応じた説明文を自動生成</p>
+<p>GitHub Actions は GitHub の豊富な <a href="https://docs.github.com/en/actions/reference/events-that-trigger-workflows" target="_blank" rel="noopener">Webhook イベント</a>をフックとして実行できます。その時に渡されたイベントタイプと追加情報を元に、いい感じの説明文を生成します。</p>
+<ul>
+<li>
+<p>プッシュ</p>
+<p>プッシュに含まれる最新コミットの SHA とコミットメッセージ</p>
+<p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%207.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%207.png"></p>
+</li>
+<li>
+<p>プルリクエスト</p>
+<p>詳細ページへのリンク、タイトル</p>
+<p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%208.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%208.png"></p>
+</li>
+</ul>
+<p>Discord の Embed もマークダウンに対応しているので、GitHub のメッセージをそのまま持ってくるとリンクやコードブロックが綺麗に整形されます。良いですね。</p>
+<p>他にもいくつかのイベントに対応しています。是非プルリクエストをください。</p>
+</li>
+</ul>
+<h1 id="使い方">使い方</h1>
+<p>README により詳細が書いてあります:</p>
+<p><a href="https://github.com/marketplace/actions/actions-status-discord" target="_blank" rel="noopener">Actions Status Discord - GitHub Marketplace</a></p>
+<p><a href="https://github.com/sarisia/actions-status-discord" target="_blank" rel="noopener">sarisia/actions-status-discord</a></p>
+<p>是非使ってみてください！</p>
+<hr>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Docker アクションはイメージのプルとビルドが必要なので遅い: <a href="https://docs.github.com/en/actions/creating-actions/about-actions#types-of-actions" target="_blank" rel="noopener">https://docs.github.com/en/actions/creating-actions/about-actions#types-of-actions</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>本当は去年リリースしていたが全然発見されず悲しくなったのでこの記事を書いた <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/discord/">Discord</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/github/">GitHub</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
