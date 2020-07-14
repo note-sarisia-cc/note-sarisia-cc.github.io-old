@@ -18,7 +18,7 @@
   </url>
   
   <url>
-    <loc>https://note.sarisia.cc/tags/github/</loc>
+    <loc>https://note.sarisia.cc/tags/github-actions/</loc>
     <lastmod>2020-07-15T00:00:00+00:00</lastmod>
   </url>
   
@@ -34,11 +34,6 @@
   
   <url>
     <loc>https://note.sarisia.cc/tags/docker/</loc>
-    <lastmod>2020-07-06T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://note.sarisia.cc/tags/github-actions/</loc>
     <lastmod>2020-07-06T00:00:00+00:00</lastmod>
   </url>
   
@@ -60,6 +55,11 @@
   <url>
     <loc>https://note.sarisia.cc/tags/python/</loc>
     <lastmod>2020-06-29T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/github/</loc>
+    <lastmod>2020-06-25T00:00:00+00:00</lastmod>
   </url>
   
   <url>

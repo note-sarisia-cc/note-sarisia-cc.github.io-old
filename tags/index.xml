@@ -21,11 +21,11 @@
     </item>
     
     <item>
-      <title>GitHub</title>
-      <link>https://note.sarisia.cc/tags/github/</link>
+      <title>GitHub Actions</title>
+      <link>https://note.sarisia.cc/tags/github-actions/</link>
       <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://note.sarisia.cc/tags/github/</guid>
+      <guid>https://note.sarisia.cc/tags/github-actions/</guid>
       <description></description>
     </item>
     
@@ -35,15 +35,6 @@
       <pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/tags/docker/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>GitHub Actions</title>
-      <link>https://note.sarisia.cc/tags/github-actions/</link>
-      <pubDate>Mon, 06 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://note.sarisia.cc/tags/github-actions/</guid>
       <description></description>
     </item>
     
@@ -62,6 +53,15 @@
       <pubDate>Mon, 29 Jun 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GitHub</title>
+      <link>https://note.sarisia.cc/tags/github/</link>
+      <pubDate>Thu, 25 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/github/</guid>
       <description></description>
     </item>
     

@@ -6,19 +6,10 @@
     <description>Recent content in GitHub on NOTE.SARISIA.CC</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/tags/github/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Discord に GitHub Actions の結果を通知するアクションを作った</title>
-      <link>https://note.sarisia.cc/entry/actions-status-discord/</link>
-      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://note.sarisia.cc/entry/actions-status-discord/</guid>
-      <description>TL;DR Actions Status Discord をもっと使ってほしい 概要 GitHub Actions は GitHub にくっついている CI/CD サービスです。リポジトリにワークフローファイルを置いておくだけで勝手に実行してくれ</description>
-    </item>
     
     <item>
       <title>GitHub Pages URL の挙動</title>
