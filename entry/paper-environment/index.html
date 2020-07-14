@@ -97,50 +97,32 @@
                         <h2><a href='/entry/paper-environment/'>ローカルでも CI でも使える卒論ビルド環境</a></h2>
                         <span class="date">2020.07.06</span>
                     </div>
-                    <div class="post_content markdown">
-
-<h1 id="tl-dr">TL;DR</h1>
-
+                    <div class="post_content markdown"><h1 id="tldr">TL;DR</h1>
 <p>ローカルビルドにも CI にも使える卒論 LaTeX のビルド環境を作った</p>
-
 <h1 id="概要">概要</h1>
-
 <p>卒論を LaTeX で書くことになったが、環境構築を複数のマシンでするのがつらく、CI の自動ビルドを構築するのもつらい。Docker とビルドスクリプトで両方なんとかならないか考えていたらなんとかなったのでいくつか考慮するポイントを書き残しておく。</p>
-
 <h1 id="ソースコード">ソースコード</h1>
-
 <p>ローカルのビルドにも利用でき、実際に CI も走っているリポジトリ。プレビューは <code>preview</code> ブランチ。</p>
-
-<p><a href="https://github.com/kirchen-bell/paper-env" target="_blank">kirchen-bell/paper-env</a></p>
-
+<p><a href="https://github.com/kirchen-bell/paper-env" target="_blank" rel="noopener">kirchen-bell/paper-env</a></p>
 <h1 id="できること">できること</h1>
-
 <ul>
 <li>ローカルで <code>docker-compose up</code> するだけで論文がビルドできる</li>
 <li>GitHub にプッシュすればローカルと同じビルド環境で勝手に CI してくれて <code>preview</code> ブランチの PDF が更新される</li>
 <li><code>devcontainer</code> にも対応しているのでビルド環境のシェルでゴニョゴニョできる ( <code>devcontainer</code> の起動のために VSCode が必要)</li>
 </ul>
-
 <h1 id="解説">解説</h1>
-
-<p>CI は <a href="https://github.com/features/actions/" target="_blank">GitHub Actions</a> で構築するが、 Actions では任意の Docker イメージ上で作業できるため、基本的には:</p>
-
+<p>CI は <a href="https://github.com/features/actions/" target="_blank" rel="noopener">GitHub Actions</a> で構築するが、 Actions では任意の Docker イメージ上で作業できるため、基本的には:</p>
 <ul>
 <li>ビルド環境の Docker イメージ</li>
 <li>上のイメージ上で正しく動作するビルドスクリプト</li>
 </ul>
-
 <p>の2つが用意できればローカルでのビルド・CI での自動ビルドどちらも同じ環境で実行できる。</p>
-
 <h2 id="ビルドスクリプト">ビルドスクリプト</h2>
-
 <p>以下の2点に気をつける:</p>
-
 <ul>
-<li><p>PDF ファイルの出力先を指定できるようにする</p>
-
+<li>
+<p>PDF ファイルの出力先を指定できるようにする</p>
 <p>大抵は <code>.tex</code> ファイルのあるディレクトリでビルドスクリプトを叩くとそのディレクトリに <code>.pdf</code> が生成されることを期待するが、最終的にプレビューブランチにデプロイしたいので、全ての成果物を1つのディレクトリにまとめておきたい。そのため、実行時にデフォルトの出力先を変更できるようにする。</p>
-
 <p>例えば、 <code>Makefile</code> なら:</p>
 <div class="highlight"><pre class="chroma"><code class="language-makefile" data-lang="makefile"><span class="c"># paper-env/src/Makefile
 </span><span class="c"># command
@@ -161,28 +143,21 @@
 <span class="nf">$(PDF)</span><span class="o">:</span> <span class="k">$(</span><span class="nv">DVI</span><span class="k">)</span>
     <span class="k">$(</span>DVIPDF<span class="k">)</span> -o <span class="k">$(</span>OUT_DIR<span class="k">)</span> $&lt;
 <span class="err">...</span>
-</code></pre></div>
-<p>そして、実行時に</p>
-<pre><code>$ make OUT_DIR=[output directory]/paper.pdf</code></pre>
-<p>とする。</p></li>
-
-<li><p><code>GITHUB_WORKSPACE</code> 環境変数に対応する</p>
-
+</code></pre></div><p>そして、実行時に</p>
+<pre><code>$ make OUT_DIR=[output directory]/paper.pdf
+</code></pre><p>とする。</p>
+</li>
+<li>
+<p><code>GITHUB_WORKSPACE</code> 環境変数に対応する</p>
 <p>GitHub Actions での CI の際、checkout されたリポジトリが格納されたディレクトリを <code>GITHUB_WORKSPACE</code> 環境変数として渡してくれる:</p>
-
-<p><a href="https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables" target="_blank">Using environment variables</a></p>
-
-<p>もし、ビルドスクリプト内で絶対パスを用いる必要がある場合は、この環境変数に対応する必要がある。</p></li>
+<p><a href="https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables" target="_blank" rel="noopener">Using environment variables</a></p>
+<p>もし、ビルドスクリプト内で絶対パスを用いる必要がある場合は、この環境変数に対応する必要がある。</p>
+</li>
 </ul>
-
 <h2 id="docker-docker-compose">Docker, Docker Compose</h2>
-
-<p>ビルド環境を Docker イメージとして固めておけば良い。 Docker Hub でも <a href="https://github.com/features/packages" target="_blank">GitHub Packages</a> でもどちらに置いてもイメージのプルにかかる時間はあまり変わらなかったので、ここはログインなしでもプルできる Docker Hub がおすすめ。 (GitHub Packages はなんでパブリックイメージのプルにもログインが必要なんですか…？)</p>
-
+<p>ビルド環境を Docker イメージとして固めておけば良い。 Docker Hub でも <a href="https://github.com/features/packages" target="_blank" rel="noopener">GitHub Packages</a> でもどちらに置いてもイメージのプルにかかる時間はあまり変わらなかったので、ここはログインなしでもプルできる Docker Hub がおすすめ。 (GitHub Packages はなんでパブリックイメージのプルにもログインが必要なんですか…？)</p>
 <p><code>LaTeX</code> や <code>pandoc</code> を扱えるイメージはたくさん転がっているため、それらを使っても良いし、自分の都合に合わせて作っても良いと思う。私のビルド環境イメージはこれ:</p>
-
-<p><a href="https://github.com/sarisia/tex" target="_blank">sarisia/tex</a></p>
-
+<p><a href="https://github.com/sarisia/tex" target="_blank" rel="noopener">sarisia/tex</a></p>
 <p>実行時は、生の <code>docker</code> コマンドを叩いても良いが、ディレクトリのマウントやコマンドの指定が面倒なので <code>docker-compose.yml</code> を書いておくと楽:</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># paper-env/docker-compose.yml</span><span class="w">
 </span><span class="w"></span><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
@@ -193,52 +168,44 @@
 </span><span class="w">      </span>- .<span class="p">:</span>/workspace<span class="p">:</span>cached<span class="w">
 </span><span class="w">    </span><span class="k">working_dir</span><span class="p">:</span><span class="w"> </span>/workspace<span class="w">
 </span><span class="w">    </span><span class="k">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
-</span><span class="w">    </span><span class="k">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&#34;make&#34;</span><span class="w"> </span><span class="p">]</span></code></pre></div>
-<ul>
-<li>ワーキングディレクトリをマウントする</li>
-
-<li><p><code>entrypoint</code> を指定する</p>
-
-<p>デフォルトでは、 <code>Dockerfile</code> の <code>ENTRYPOINT</code> , <code>CMD</code> が使われる。また、 <code>Dockerfile</code> は親イメージの <code>ENTRYPOINT</code> と <code>CMD</code> を継承する。 <code>docker-compose.yml</code> で <code>command</code> だけ指定した場合、もし変な <code>ENTRYPOINT</code> が <code>Dockerfile</code> やその親イメージで指定されていた場合、おかしな動きをする場合があるため、 <code>entrypoint</code> を指定してクリアしておくと安心。</p></li>
-
-<li><p>ビルドスクリプトの起動は <code>command</code> で指定する</p>
-
-<p>後述の <code>devcontainer</code> 対応の際、 <code>devcontainer</code> の <code>docker-compose.yml</code> では <code>command</code> をオーバーライドしてコンテナが即死しないようにしているため、 <code>entrypoint</code> でビルドスクリプトの起動を指定してしまうと <code>command</code> が <code>entrypoint</code> の引数として解釈されてコンテナは死ぬ。</p></li>
+</span><span class="w">    </span><span class="k">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&#34;make&#34;</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre></div><ul>
+<li>
+<p>ワーキングディレクトリをマウントする</p>
+</li>
+<li>
+<p><code>entrypoint</code> を指定する</p>
+<p>デフォルトでは、 <code>Dockerfile</code> の <code>ENTRYPOINT</code> , <code>CMD</code> が使われる。また、 <code>Dockerfile</code> は親イメージの <code>ENTRYPOINT</code> と <code>CMD</code> を継承する。 <code>docker-compose.yml</code> で <code>command</code> だけ指定した場合、もし変な <code>ENTRYPOINT</code> が <code>Dockerfile</code> やその親イメージで指定されていた場合、おかしな動きをする場合があるため、 <code>entrypoint</code> を指定してクリアしておくと安心。</p>
+</li>
+<li>
+<p>ビルドスクリプトの起動は <code>command</code> で指定する</p>
+<p>後述の <code>devcontainer</code> 対応の際、 <code>devcontainer</code> の <code>docker-compose.yml</code> では <code>command</code> をオーバーライドしてコンテナが即死しないようにしているため、 <code>entrypoint</code> でビルドスクリプトの起動を指定してしまうと <code>command</code> が <code>entrypoint</code> の引数として解釈されてコンテナは死ぬ。</p>
+</li>
 </ul>
-
 <p>これで、ローカルでビルドするときは:</p>
-<pre><code>$ docker-compose up</code></pre>
-<p>するだけでビルドできるようになった。</p>
-
+<pre><code>$ docker-compose up
+</code></pre><p>するだけでビルドできるようになった。</p>
 <h2 id="ci-github-actions">CI (GitHub Actions)</h2>
-
 <p>GitHub にプッシュしたら勝手に PDF にしてどこかに置いておいて欲しい。</p>
-
 <p>GitHub Actions は Docker イメージをアクションとして実行できる。ビルドスクリプトや Docker メージを使い回せるので最高。</p>
-
 <h3 id="アクション">アクション</h3>
-
 <p>以下の注意点に従い、 <code>Dockerfile</code> と <code>action.yml</code> を用意する:</p>
-
-<p><a href="https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions" target="_blank">Dockerfile support for GitHub Actions</a></p>
+<p><a href="https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions" target="_blank" rel="noopener">Dockerfile support for GitHub Actions</a></p>
 <div class="highlight"><pre class="chroma"><code class="language-docker" data-lang="docker"><span class="c"># paper-env/.github/actions/latex-ci/Dockerfile</span><span class="err">
 </span><span class="err"></span><span class="k">FROM</span><span class="s"> sarisia/texlive:2019</span><span class="err">
-</span><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span> <span class="s2">&#34;make&#34;</span> <span class="p">]</span></code></pre></div>
-<p>ビルドスクリプトの実行は <code>ENTRYPOINT</code> で指定すると良い。 <code>ENTRYPOINT</code> をオーバーライドすると  <code>CMD</code> もリセットされるため、おかしな引数が混入することもない。</p>
+</span><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span> <span class="s2">&#34;make&#34;</span> <span class="p">]</span><span class="err">
+</span></code></pre></div><p>ビルドスクリプトの実行は <code>ENTRYPOINT</code> で指定すると良い。 <code>ENTRYPOINT</code> をオーバーライドすると  <code>CMD</code> もリセットされるため、おかしな引数が混入することもない。</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># paper-env/.github/actions/latex-ci/action.yml</span><span class="w">
 </span><span class="w"></span><span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;latex ci&#34;</span><span class="w">
 </span><span class="w"></span><span class="k">description</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;build latex documents&#34;</span><span class="w">
 </span><span class="w">
 </span><span class="w"></span><span class="k">runs</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="k">using</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;docker&#34;</span><span class="w">
-</span><span class="w">  </span><span class="k">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Dockerfile&#34;</span></code></pre></div>
-<p>GitHub Actions は、勝手にディレクトリをマウントし、そのディレクトリをワーキングディレクトリに指定しつつ <code>docker run</code> してくれる。</p>
-
+</span><span class="w">  </span><span class="k">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Dockerfile&#34;</span><span class="w">
+</span></code></pre></div><p>GitHub Actions は、勝手にディレクトリをマウントし、そのディレクトリをワーキングディレクトリに指定しつつ <code>docker run</code> してくれる。</p>
 <h3 id="ワークフロー">ワークフロー</h3>
-
 <p>次に、アクションを利用するワークフローを定義する:</p>
-
-<p><a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions" target="_blank">Workflow syntax for GitHub Actions</a></p>
+<p><a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions" target="_blank" rel="noopener">Workflow syntax for GitHub Actions</a></p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># paper-env/.github/workflows/preview.yml</span><span class="w">
 </span><span class="w"></span><span class="k">name</span><span class="p">:</span><span class="w"> </span>preview<span class="w">
 </span><span class="w"></span><span class="k">on</span><span class="p">:</span><span class="w">
@@ -270,21 +237,16 @@
 </span><span class="w">        </span><span class="k">with</span><span class="p">:</span><span class="w">
 </span><span class="w">          </span><span class="k">webhook</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
 </span><span class="w">          </span><span class="k">status</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>job.status<span class="w"> </span>}}<span class="w">
-</span><span class="w">          </span><span class="k">job</span><span class="p">:</span><span class="w"> </span>deploy<span class="w"> </span>paper<span class="w"> </span>preview</code></pre></div>
-<p><code>actions/checkout</code> と <code>./.github/actions/latex-ci</code> さえ忘れなければあとは自由。</p>
-
+</span><span class="w">          </span><span class="k">job</span><span class="p">:</span><span class="w"> </span>deploy<span class="w"> </span>paper<span class="w"> </span>preview<span class="w">
+</span></code></pre></div><p><code>actions/checkout</code> と <code>./.github/actions/latex-ci</code> さえ忘れなければあとは自由。</p>
 <p>今回は別ブランチへのコミットとビルド結果の Discord への通知を行っている。</p>
-
 <h2 id="devcontainer"><code>devcontainer</code></h2>
-
 <p>Docker コンテナを作業環境として使えるようにする。いちいち <code>docker exec</code> や <code>docker attach</code> とかしなくても <code>Visual Studio Code</code> ならワンクリックで起動できる。そうじゃなくても頑張って起動はできるのでファイルを置いておいて損はないと思う。</p>
-
-<p><a href="https://code.visualstudio.com/docs/remote/containers" target="_blank">Developing inside a Container using Visual Studio Code Remote Development</a></p>
-
+<p><a href="https://code.visualstudio.com/docs/remote/containers" target="_blank" rel="noopener">Developing inside a Container using Visual Studio Code Remote Development</a></p>
 <p>基本的には VSCode が勝手に自動生成してくれるファイルそのままで動く:</p>
-
 <ul>
-<li><p><code>devcontainer/docker-compose.yml</code></p>
+<li>
+<p><code>devcontainer/docker-compose.yml</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># paper-env/.devcontainer/docker-compose.yml</span><span class="w">
 </span><span class="w"></span><span class="c">#-------------------------------------------------------------------------------------------------------------</span><span class="w">
 </span><span class="w"></span><span class="c"># Copyright (c) Microsoft Corporation. All rights reserved.</span><span class="w">
@@ -311,7 +273,7 @@
 </span><span class="w">    </span><span class="c"># Uncomment if you want to expose any additional ports. The snippet below exposes port 3000.</span><span class="w">
 </span><span class="w">    </span><span class="c"># ports:</span><span class="w">
 </span><span class="w">    </span><span class="c">#   - 3000:3000</span><span class="w">
-</span><span class="w">        
+</span><span class="w">      
 </span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span><span class="c"># Update this to wherever you want VS Code to mount the folder of your project</span><span class="w">
 </span><span class="w">      </span>- .<span class="p">:</span>/workspace<span class="p">:</span>cached<span class="w">
@@ -326,21 +288,17 @@
 </span><span class="w">    </span><span class="c">#   - seccomp:unconfined</span><span class="w">
 </span><span class="w">
 </span><span class="w">    </span><span class="c"># Overrides default command so things don&#39;t shut down after the process ends.</span><span class="w">
-</span><span class="w">    </span><span class="k">command</span><span class="p">:</span><span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&#34;while sleep 1000; do :; done&#34;</span></code></pre></div></li>
+</span><span class="w">    </span><span class="k">command</span><span class="p">:</span><span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&#34;while sleep 1000; do :; done&#34;</span><span class="w">
+</span></code></pre></div></li>
 </ul>
-
 <p>VSCode 外で頑張って起動したいなら:</p>
 <pre><code>$ docker-compose -f docker-compose.yml -f .devcontainer/docker-compose.yml up -d
-$ docker-compose exec texlive /bin/bash</code></pre>
-<h1 id="まとめ">まとめ</h1>
-
+$ docker-compose exec texlive /bin/bash
+</code></pre><h1 id="まとめ">まとめ</h1>
 <p>今の所は特にストレス無く使えている。</p>
-
 <p>Overleaf や Cloud LaTeX などのオンライン IDE 環境もあるが、コンパイラが制限されていたり UI が煩雑だったりとあまり心地よくなかったので環境が落ち着いてよかった。</p>
-
 <p>GitHub の Codespaces がリリースされれば、 Web エディタや VSCode からのリモート接続もできるようになるので、ローカルへのクローンすら不要になる。楽しみですね。</p>
-
-<p><a href="https://github.com/features/codespaces/" target="_blank">Codespaces</a></p>
+<p><a href="https://github.com/features/codespaces/" target="_blank" rel="noopener">Codespaces</a></p>
 </div>
                     <div class="post_footer">
                         

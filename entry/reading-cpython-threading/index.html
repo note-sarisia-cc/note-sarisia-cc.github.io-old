@@ -97,57 +97,39 @@
                         <h2><a href='/entry/reading-cpython-threading/'>CPython の threading を読み解く</a></h2>
                         <span class="date">2020.06.29</span>
                     </div>
-                    <div class="post_content markdown">
-
-<h1 id="概要">概要</h1>
-
+                    <div class="post_content markdown"><h1 id="概要">概要</h1>
 <p>Python の <code>threading</code> モジュールは、Python インタプリタのスレッド操作の高レベルな API を提供する:</p>
-
-<p><a href="https://docs.python.org/ja/3/library/threading.html" target="_blank">threading - Thread-based parallelism - Python 3.8.3 documentation</a></p>
-
+<p><a href="https://docs.python.org/ja/3/library/threading.html" target="_blank" rel="noopener">threading - Thread-based parallelism - Python 3.8.3 documentation</a></p>
 <p>この文章では、 <code>threading</code> モジュールでのスレッド操作を行った際のインタプリタの動きを、 <code>CPython</code> の実装を追うことで確認する。</p>
-
 <h1 id="準備">準備</h1>
-
 <h2 id="対象">対象</h2>
-
 <p><code>Python 3.8.3</code> としてリリースされた <code>CPython</code> のソースコードを対象に行う:</p>
-
-<p><a href="https://github.com/python/cpython/tree/v3.8.3" target="_blank">python/cpython</a></p>
-
+<p><a href="https://github.com/python/cpython/tree/v3.8.3" target="_blank" rel="noopener">python/cpython</a></p>
 <p>Tag: <code>v3.8.3</code></p>
-
 <p>Commit SHA: <code>6f8c8320e9eac9bc7a7f653b43506e75916ce8e8</code></p>
-
 <h2 id="環境">環境</h2>
-
 <p>POSIX Threads がサポートされた Linux x64 上での動きを追う</p>
-
 <h2 id="前提知識">前提知識</h2>
-
 <ul>
-<li><p><code>threading</code> ライブラリの利用法</p>
-
-<p><a href="https://docs.python.org/ja/3/library/threading.html" target="_blank">threading - Thread-based parallelism - Python 3.8.3 documentation</a></p></li>
-
-<li><p><code>CPython</code> のソースコードレイアウト</p>
-
-<p><a href="https://devguide.python.org/exploring/" target="_blank">23. Exploring CPython's Internals - Python Developer's Guide</a></p></li>
-
-<li><p>CPython Binary Extension (Native Extension) について</p>
-
-<p><a href="https://packaging.python.org/guides/packaging-binary-extensions/" target="_blank">Packaging binary extensions - Python Packaging User Guide</a></p>
-
-<p><a href="https://docs.python.org/ja/3/extending/index.html" target="_blank">Extending and Embedding the Python Interpreter - Python 3.8.3 documentation</a></p>
-
+<li>
+<p><code>threading</code> ライブラリの利用法</p>
+<p><a href="https://docs.python.org/ja/3/library/threading.html" target="_blank" rel="noopener">threading - Thread-based parallelism - Python 3.8.3 documentation</a></p>
+</li>
+<li>
+<p><code>CPython</code> のソースコードレイアウト</p>
+<p><a href="https://devguide.python.org/exploring/" target="_blank" rel="noopener">23. Exploring CPython&rsquo;s Internals - Python Developer&rsquo;s Guide</a></p>
+</li>
+<li>
+<p>CPython Binary Extension (Native Extension) について</p>
+<p><a href="https://packaging.python.org/guides/packaging-binary-extensions/" target="_blank" rel="noopener">Packaging binary extensions - Python Packaging User Guide</a></p>
+<p><a href="https://docs.python.org/ja/3/extending/index.html" target="_blank" rel="noopener">Extending and Embedding the Python Interpreter - Python 3.8.3 documentation</a></p>
 <ul>
 <li>少なくとも <code>1. C や C++ による Python の拡張</code> と <code>2. 拡張の型の定義: チュートリアル</code> を読む必要がある</li>
 <li>その他、必要な知識は本文中に適宜記載。</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h2 id="アプリケーションコード">アプリケーションコード</h2>
-
 <p>以下の Python コードをインタプリタにて実行した場合の動きを確認する:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
@@ -164,9 +146,10 @@
 <span class="n">th1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 <span class="n">th2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 <span class="n">th1</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-<span class="n">th2</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></code></pre></div>
-<ul>
-<li><p>実行結果</p>
+<span class="n">th2</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</code></pre></div><ul>
+<li>
+<p>実行結果</p>
 <pre><code>$ ./python test_thread.py
 140150431667968: 10
 140150352901888: 10
@@ -187,18 +170,17 @@
 140150431667968: 2
 140150352901888: 2
 140150431667968: 1
-140150352901888: 1</code></pre></li>
+140150352901888: 1
+</code></pre></li>
 </ul>
-
 <h1 id="検証">検証</h1>
-
-<h2 id="threading-thread-のインスタンス化"><code>threading.Thread</code> のインスタンス化</h2>
+<h2 id="threadingthread-のインスタンス化"><code>threading.Thread</code> のインスタンス化</h2>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">th1</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">countdown</span><span class="p">)</span>
-<span class="n">th2</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">countdown</span><span class="p">)</span></code></pre></div>
-<p><code>threading.Thread.__init__()</code> から確認する。</p>
-
+<span class="n">th2</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">countdown</span><span class="p">)</span>
+</code></pre></div><p><code>threading.Thread.__init__()</code> から確認する。</p>
 <ul>
-<li><p><code>__init__()</code></p>
+<li>
+<p><code>__init__()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:761</span>
 <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -245,16 +227,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_stderr</span> <span class="o">=</span> <span class="n">_sys</span><span class="o">.</span><span class="n">stderr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_invoke_excepthook</span> <span class="o">=</span> <span class="n">_make_invoke_excepthook</span><span class="p">()</span>
         <span class="c1"># For debugging and _after_fork()</span>
-        <span class="n">_dangling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code></pre></div></li>
+        <span class="n">_dangling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</code></pre></div></li>
 </ul>
-
 <p>引数 <code>target</code> として渡される Callable は <code>self._target</code> に格納される。</p>
-
 <h2 id="スレッドの実行開始">スレッドの実行開始</h2>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">th1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-<span class="n">th2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></code></pre></div>
-<ul>
-<li><p><code>start()</code></p>
+<span class="n">th2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</code></pre></div><ul>
+<li>
+<p><code>start()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:834</span>
 <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&#34;&#34;&#34;Start the thread&#39;s activity.
@@ -279,29 +261,27 @@
             <span class="k">with</span> <span class="n">_active_limbo_lock</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">_limbo</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
             <span class="k">raise</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></code></pre></div></li>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</code></pre></div></li>
 </ul>
-
 <p>既に開始されたスレッドかどうか確認した後に、 <code>_start_new_thread()</code> によって実際にスレッドを開始する。</p>
-
 <ul>
-<li><p><code>_start_new_thread</code></p>
+<li>
+<p><code>_start_new_thread</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:32</span>
 <span class="c1"># Rename some stuff so &#34;from threading import *&#34; is safe</span>
 <span class="n">_start_new_thread</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">start_new_thread</span>
 <span class="n">_allocate_lock</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">allocate_lock</span>
 <span class="n">_set_sentinel</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">_set_sentinel</span>
-<span class="n">get_ident</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">get_ident</span></code></pre></div></li>
+<span class="n">get_ident</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">get_ident</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>_start_new_thread</code> は <code>_thread.start_new_thread</code> のエイリアスであった。 <code>_thread</code> は、 CPython インタプリタの一部であり、Native Extension として C で記述されている。実体は <code>Modules/_threadmodule.c</code> にある。</p>
-
 <h3 id="ネイティブモジュールを追う">ネイティブモジュールを追う</h3>
-
 <p>では、ネイティブモジュール内を読む。まずは、 Python に露出している API とネイティブ (C) で記述された関数とのマッピングを確認する。先立って、モジュール定義からメソッドテーブルを確認する。</p>
-
 <ul>
-<li><p><code>threadmodule</code></p>
+<li>
+<p><code>threadmodule</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:1497
 </span><span class="c1"></span><span class="k">static</span> <span class="k">struct</span> <span class="n">PyModuleDef</span> <span class="n">threadmodule</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">PyModuleDef_HEAD_INIT</span><span class="p">,</span>
@@ -313,13 +293,13 @@
     <span class="nb">NULL</span><span class="p">,</span>
     <span class="nb">NULL</span><span class="p">,</span>
     <span class="nb">NULL</span>
-<span class="p">};</span></code></pre></div></li>
+<span class="p">};</span>
+</code></pre></div></li>
 </ul>
-
 <p>メソッドテーブルは <code>thread_methods</code> である。</p>
-
 <ul>
-<li><p><code>thread_methods</code></p>
+<li>
+<p><code>thread_methods</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:1446
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyMethodDef</span> <span class="n">thread_methods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">{</span><span class="s">&#34;start_new_thread&#34;</span><span class="p">,</span>        <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">thread_PyThread_start_new_thread</span><span class="p">,</span>
@@ -351,13 +331,13 @@
     <span class="p">{</span><span class="s">&#34;_excepthook&#34;</span><span class="p">,</span>              <span class="n">thread_excepthook</span><span class="p">,</span>
      <span class="n">METH_O</span><span class="p">,</span> <span class="n">excepthook_doc</span><span class="p">},</span>
     <span class="p">{</span><span class="nb">NULL</span><span class="p">,</span>                      <span class="nb">NULL</span><span class="p">}</span>           <span class="cm">/* sentinel */</span>
-<span class="p">};</span></code></pre></div></li>
+<span class="p">};</span>
+</code></pre></div></li>
 </ul>
-
 <p>Python 上の <code>_thread.start_new_thread()</code> の実体は <code>thread_PyThread_start_new_thread</code> である。</p>
-
 <ul>
-<li><p><code>thread_PyThread_start_new_thread()</code></p>
+<li>
+<p><code>thread_PyThread_start_new_thread()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:1024
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
 <span class="nf">thread_PyThread_start_new_thread</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">fargs</span><span class="p">)</span>
@@ -422,13 +402,13 @@
 </span><span class="s">taken from the optional dictionary kwargs.  The thread exits when the</span><span class="se">\n</span><span class="s">\
 </span><span class="s">function returns; the return value is ignored.  The thread will also exit</span><span class="se">\n</span><span class="s">\
 </span><span class="s">when the function raises an unhandled exception; a stack trace will be</span><span class="se">\n</span><span class="s">\
-</span><span class="s">printed unless the exception is SystemExit.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span></code></pre></div></li>
+</span><span class="s">printed unless the exception is SystemExit.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</code></pre></div></li>
 </ul>
-
-<h3 id="pyevel-initthreads"><code>PyEvel_InitThreads()</code></h3>
-
+<h3 id="pyevel_initthreads"><code>PyEvel_InitThreads()</code></h3>
 <ul>
-<li><p><code>PyEvel_InitThreads()</code></p>
+<li>
+<p><code>PyEvel_InitThreads()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Python/ceval.c:200
 </span><span class="c1"></span><span class="kt">void</span>
 <span class="nf">PyEval_InitThreads</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
@@ -450,16 +430,14 @@
     <span class="k">if</span> <span class="p">(</span><span class="n">pending</span><span class="o">-&gt;</span><span class="n">lock</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">Py_FatalError</span><span class="p">(</span><span class="s">&#34;Can&#39;t initialize threads for pending calls&#34;</span><span class="p">);</span>
     <span class="p">}</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>GIL</code> が初期化されていなければ <code>create_gil()</code> で初期化し、続けて <code>take_gil()</code> で <code>GIL</code> を獲得する。スレッドを建てようとするときに初めて <code>GIL</code> を初期化しているため、インタプリタがシングルスレッドで走っている時は <code>GIL</code> を利用しない。</p>
-
-<h3 id="pythread-start-new-thread"><code>PyThread_start_new_thread()</code></h3>
-
+<h3 id="pythread_start_new_thread"><code>PyThread_start_new_thread()</code></h3>
 <ul>
-<li><p><code>PyThread_start_new_thread()</code></p>
-
+<li>
+<p><code>PyThread_start_new_thread()</code></p>
 <p>環境によって実装が異なる。 Windows なら <code>Python/threda_nt.h</code> 、 POSIX なら <code>Python/thread_pthread.h</code> が利用される。</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Python/thread_pthread.h:236
 </span><span class="c1"></span><span class="kt">unsigned</span> <span class="kt">long</span>
@@ -530,17 +508,15 @@
 <span class="cp">#else
 </span><span class="cp"></span>    <span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span> <span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">th</span><span class="p">;</span>
 <span class="cp">#endif
-</span><span class="cp"></span><span class="p">}</span></code></pre></div></li>
+</span><span class="cp"></span><span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p>ようやく <code>pthread_create()</code> が登場する。 Python  のスレッドは OS のネイティブスレッドであることがわかる。</p>
-
-<p><a href="https://linuxjm.osdn.jp/html/glibc-linuxthreads/man3/pthread_create.3.html" target="_blank">PTHREAD_CREATE</a></p>
-
+<p><a href="https://linuxjm.osdn.jp/html/glibc-linuxthreads/man3/pthread_create.3.html" target="_blank" rel="noopener">PTHREAD_CREATE</a></p>
 <p><code>start_routine</code> は <code>pythread_wrapper</code> である:</p>
-
 <ul>
-<li><p><code>pythread_wrapper()</code></p>
+<li>
+<p><code>pythread_wrapper()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Python/thread_pthread.h:223
 </span><span class="c1"></span><span class="k">static</span> <span class="kt">void</span> <span class="o">*</span>
 <span class="nf">pythread_wrapper</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
@@ -553,15 +529,14 @@
 
     <span class="n">func</span><span class="p">(</span><span class="n">func_arg</span><span class="p">);</span>
     <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p>引数として渡された <code>pythread_callback</code> の <code>callback-&gt;func</code> を、 <code>callback-&gt;arg</code> を引数として実行する。この <code>func</code> と <code>arg</code> は、 <code>PyThread_start_new_thread</code> へ渡された引数であり、 <code>func</code> が <code>t_bootstrap</code> 、 <code>arg</code> が <code>struct bootstate</code> 型の <code>boot</code> である。</p>
-
-<h3 id="t-bootstrap"><code>t_bootstrap</code></h3>
-
+<h3 id="t_bootstrap"><code>t_bootstrap</code></h3>
 <ul>
-<li><p><code>t_bootstrap()</code></p>
+<li>
+<p><code>t_bootstrap()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:990
 </span><span class="c1"></span><span class="k">static</span> <span class="kt">void</span>
 <span class="nf">t_bootstrap</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">boot_raw</span><span class="p">)</span>
@@ -595,19 +570,16 @@
     <span class="n">PyThreadState_Clear</span><span class="p">(</span><span class="n">tstate</span><span class="p">);</span>
     <span class="n">PyThreadState_DeleteCurrent</span><span class="p">();</span>
     <span class="n">PyThread_exit_thread</span><span class="p">();</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>bootstate</code> 構造体 <code>boot</code> に詰められて渡された <code>boot-&gt;func</code> , <code>boot-&gt;args</code> , <code>boot-&gt;keyw</code> を <code>PyObject_Call()</code> に渡し、Python コードとして実行する。</p>
-
-<p><a href="https://docs.python.org/ja/3/c-api/object.html#c.PyObject_Call" target="_blank">Object Protocol - Python 3.8.3 documentation</a></p>
-
-<h3 id="boot-struct-bootstate"><code>boot</code> , <code>struct bootstate</code></h3>
-
+<p><a href="https://docs.python.org/ja/3/c-api/object.html#c.PyObject_Call" target="_blank" rel="noopener">Object Protocol - Python 3.8.3 documentation</a></p>
+<h3 id="boot--struct-bootstate"><code>boot</code> , <code>struct bootstate</code></h3>
 <p><code>boot</code> は <code>struct bootstate</code> 型の変数であり、スレッド生成後に実行される Python コードや引数が格納されている。</p>
-
 <ul>
-<li><p><code>struct bootstate</code></p>
+<li>
+<p><code>struct bootstate</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:982
 </span><span class="c1"></span><span class="k">struct</span> <span class="n">bootstate</span> <span class="p">{</span>
     <span class="n">PyInterpreterState</span> <span class="o">*</span><span class="n">interp</span><span class="p">;</span>
@@ -615,17 +587,17 @@
     <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">;</span>
     <span class="n">PyObject</span> <span class="o">*</span><span class="n">keyw</span><span class="p">;</span>
     <span class="n">PyThreadState</span> <span class="o">*</span><span class="n">tstate</span><span class="p">;</span>
-<span class="p">};</span></code></pre></div></li>
+<span class="p">};</span>
+</code></pre></div></li>
 </ul>
-
 <p>実際に <code>boot</code> に詰められる中身を確認する。</p>
-
 <p><code>threading</code> モジュールの <code>start()</code> から辿ると:</p>
-
 <ul>
-<li><p><code>_bootstrap()</code> , <code>_bootstrap_inner()</code></p>
+<li>
+<p><code>_bootstrap()</code> , <code>_bootstrap_inner()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:852</span>
-            <span class="n">_start_new_thread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bootstrap</span><span class="p">,</span> <span class="p">())</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:876</span>
+            <span class="n">_start_new_thread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bootstrap</span><span class="p">,</span> <span class="p">())</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:876</span>
 <span class="k">def</span> <span class="nf">_bootstrap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Wrapper around the real bootstrap code that ignores</span>
         <span class="c1"># exceptions during interpreter cleanup.  Those typically</span>
@@ -644,7 +616,8 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_daemonic</span> <span class="ow">and</span> <span class="n">_sys</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">return</span>
-            <span class="k">raise</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:915</span>
+            <span class="k">raise</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:915</span>
 <span class="k">def</span> <span class="nf">_bootstrap_inner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_ident</span><span class="p">()</span>
@@ -672,13 +645,13 @@
                     <span class="c1"># grabs _active_limbo_lock.</span>
                     <span class="k">del</span> <span class="n">_active</span><span class="p">[</span><span class="n">get_ident</span><span class="p">()]</span>
                 <span class="k">except</span><span class="p">:</span>
-                    <span class="k">pass</span></code></pre></div></li>
+                    <span class="k">pass</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>self._bootstrap()</code> は <code>self.run()</code> をラップしているだけであった。</p>
-
 <ul>
-<li><p><code>self.run()</code></p>
+<li>
+<p><code>self.run()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&#34;&#34;&#34;Method representing the thread&#39;s activity.
 </span><span class="s2">
@@ -694,23 +667,21 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="c1"># Avoid a refcycle if the thread is running a function with</span>
             <span class="c1"># an argument that has a member that points to the thread.</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span></code></pre></div></li>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>Thread.run()</code> はデフォルトでは <code>self._target()</code> を実行する他、オーバーライドすることもできる。</p>
-
 <h3 id="まとめ">まとめ</h3>
-
 <ul>
 <li>CPython のスレッドは OS のネイティブスレッド。POSIX なら <code>pthread</code></li>
 <li>別スレッドの生成時に初めて GIL の初期化が行われる。インタプリタがメインスレッドのみで走っている場合は GIL は初期化されず、用いられない。</li>
 </ul>
-
 <h2 id="スレッドの完了待ち合わせ">スレッドの完了待ち合わせ</h2>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">th1</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-<span class="n">th2</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></code></pre></div>
-<ul>
-<li><p><code>join()</code></p>
+<span class="n">th2</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</code></pre></div><ul>
+<li>
+<p><code>join()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:979</span>
 <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="s2">&#34;&#34;&#34;Wait until the thread terminates.
@@ -748,13 +719,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># the behavior of a negative timeout isn&#39;t documented, but</span>
             <span class="c1"># historically .join(timeout=x) for x&lt;0 has acted as if timeout=0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_tstate_lock</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></code></pre></div></li>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_tstate_lock</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</code></pre></div></li>
 </ul>
-
 <p>処理本体は <code>self._wait_for_tstate_lock()</code> .</p>
-
 <ul>
-<li><p><code>self._wait_for_tstate_lock()</code></p>
+<li>
+<p><code>self._wait_for_tstate_lock()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lob/threading</span>
 <span class="k">def</span> <span class="nf">_wait_for_tstate_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="c1"># Issue #18808: wait for the thread state to be gone.</span>
@@ -768,19 +739,16 @@
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_stopped</span>
         <span class="k">elif</span> <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
             <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span></code></pre></div></li>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>self._tstate_lock</code> をロックしてみて、ロックが獲得できたらスレッドが死んでいると判断しているらしい。 <code>self._stop()</code> はつまらない片付け処理だった。</p>
-
-<h3 id="tstate-lock-の初期化-獲得"><code>_tstate_lock</code> の初期化、獲得</h3>
-
+<h3 id="_tstate_lock-の初期化獲得"><code>_tstate_lock</code> の初期化、獲得</h3>
 <p><code>self._tstate_lock</code> がどこで初期化されているか確認する。</p>
-
 <p>まず、実際に <code>self._tstate_lock</code> へ値を代入しているのは <code>_set_tstate_lock()</code> である:</p>
-
 <ul>
-<li><p><code>_set_tstate_lock()</code></p>
+<li>
+<p><code>_set_tstate_lock()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:903</span>
 <span class="k">def</span> <span class="nf">_set_tstate_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&#34;&#34;&#34;
@@ -792,29 +760,27 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">_shutdown_locks_lock</span><span class="p">:</span>
-                <span class="n">_shutdown_locks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tstate_lock</span><span class="p">)</span></code></pre></div></li>
+                <span class="n">_shutdown_locks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tstate_lock</span><span class="p">)</span>
+</code></pre></div></li>
 </ul>
-
 <p>ロックに <code>_set_sentinel()</code> の返り値を代入した後に、ロックを獲得している。</p>
-
 <p><code>_set_tstate_lock()</code> の呼び出し元は <code>_bootstrap_inner()</code> であり、ネイティブスレッドの生成後、実際にアプリケーションコードを走らせ始める直前にロックを作成していることがわかる。</p>
-
 <p>続いて、 <code>_set_sentinel()</code> を見ていく。実体は:</p>
-
 <ul>
-<li><p><code>_set_sentinel</code></p>
+<li>
+<p><code>_set_sentinel</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Lib/threading.py:32</span>
 <span class="c1"># Rename some stuff so &#34;from threading import *&#34; is safe</span>
 <span class="n">_start_new_thread</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">start_new_thread</span>
 <span class="n">_allocate_lock</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">allocate_lock</span>
 <span class="n">_set_sentinel</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">_set_sentinel</span>
-<span class="n">get_ident</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">get_ident</span></code></pre></div></li>
+<span class="n">get_ident</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">get_ident</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>_threading</code> モジュールのメソッドテーブルを確認すると、実装は <code>thread__set_sentinel</code> である:</p>
-
 <ul>
-<li><p><code>thread_set_sentinel()</code></p>
+<li>
+<p><code>thread_set_sentinel()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:1211
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
 <span class="nf">thread__set_sentinel</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">Py_UNUSED</span><span class="p">(</span><span class="n">ignored</span><span class="p">))</span>
@@ -845,17 +811,15 @@
     <span class="n">tstate</span><span class="o">-&gt;</span><span class="n">on_delete_data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">wr</span><span class="p">;</span>
     <span class="n">tstate</span><span class="o">-&gt;</span><span class="n">on_delete</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">release_sentinel</span><span class="p">;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="n">lock</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p>Python から叩けるロックは <code>lockobject</code> 型のようである。まずは、この <code>lockobject</code> について確認する。</p>
-
 <h3 id="lockobject"><code>lockobject</code></h3>
-
 <p>タイプオブジェクト、メソッド定義を見る:</p>
-
 <ul>
-<li><p><code>PyTypeObject Locktype</code></p>
+<li>
+<p><code>PyTypeObject Locktype</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:228
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyTypeObject</span> <span class="n">Locktype</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">PyVarObject_HEAD_INIT</span><span class="p">(</span><span class="o">&amp;</span><span class="n">PyType_Type</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -887,9 +851,10 @@
     <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/*tp_iter*/</span>
     <span class="mi">0</span><span class="p">,</span>                                  <span class="cm">/*tp_iternext*/</span>
     <span class="n">lock_methods</span><span class="p">,</span>                       <span class="cm">/*tp_methods*/</span>
-<span class="p">};</span></code></pre></div></li>
-
-<li><p><code>PyMethodDef lock_methods</code></p>
+<span class="p">};</span>
+</code></pre></div></li>
+<li>
+<p><code>PyMethodDef lock_methods</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:208
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyMethodDef</span> <span class="n">lock_methods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">{</span><span class="s">&#34;acquire_lock&#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)(</span><span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span><span class="p">))</span><span class="n">lock_PyThread_acquire_lock</span><span class="p">,</span>
@@ -909,22 +874,23 @@
     <span class="p">{</span><span class="s">&#34;__exit__&#34;</span><span class="p">,</span>    <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">lock_PyThread_release_lock</span><span class="p">,</span>
      <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">release_doc</span><span class="p">},</span>
     <span class="p">{</span><span class="nb">NULL</span><span class="p">,</span>           <span class="nb">NULL</span><span class="p">}</span>              <span class="cm">/* sentinel */</span>
-<span class="p">};</span></code></pre></div></li>
-
-<li><p><code>struct lockobject</code></p>
+<span class="p">};</span>
+</code></pre></div></li>
+<li>
+<p><code>struct lockobject</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:19
 </span><span class="c1"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
     <span class="n">PyObject_HEAD</span>
     <span class="n">PyThread_type_lock</span> <span class="n">lock_lock</span><span class="p">;</span>
     <span class="n">PyObject</span> <span class="o">*</span><span class="n">in_weakreflist</span><span class="p">;</span>
     <span class="kt">char</span> <span class="n">locked</span><span class="p">;</span> <span class="cm">/* for sanity checking */</span>
-<span class="p">}</span> <span class="n">lockobject</span><span class="p">;</span></code></pre></div></li>
+<span class="p">}</span> <span class="n">lockobject</span><span class="p">;</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>acquire</code>, <code>release</code> された際の動作を見る。</p>
-
 <ul>
-<li><p><code>lock_PyThread_acquire_lock()</code></p>
+<li>
+<p><code>lock_PyThread_acquire_lock()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:137
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
 <span class="nf">lock_PyThread_acquire_lock</span><span class="p">(</span><span class="n">lockobject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">kwds</span><span class="p">)</span>
@@ -943,13 +909,13 @@
     <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">==</span> <span class="n">PY_LOCK_ACQUIRED</span><span class="p">)</span>
         <span class="n">self</span><span class="o">-&gt;</span><span class="n">locked</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
     <span class="k">return</span> <span class="n">PyBool_FromLong</span><span class="p">(</span><span class="n">r</span> <span class="o">==</span> <span class="n">PY_LOCK_ACQUIRED</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p>本質は <code>acquire_timed()</code> ぽい。</p>
-
 <ul>
-<li><p><code>acquire_timed()</code></p>
+<li>
+<p><code>acquire_timed()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:46
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyLockStatus</span>
 <span class="nf">acquire_timed</span><span class="p">(</span><span class="n">PyThread_type_lock</span> <span class="n">lock</span><span class="p">,</span> <span class="n">_PyTime_t</span> <span class="n">timeout</span><span class="p">)</span>
@@ -995,9 +961,9 @@
     <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">r</span> <span class="o">==</span> <span class="n">PY_LOCK_INTR</span><span class="p">);</span>  <span class="cm">/* Retry if we were interrupted. */</span>
 
     <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>PyThread_acquire_lock_timed()</code> は実装が2つあり、以下のマクロによってどちらの実装を利用するか決められる:</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Python/thread_pthread.h:77
 </span><span class="c1"></span><span class="cm">/* Whether or not to use semaphores directly rather than emulating them with
@@ -1008,11 +974,11 @@
 </span><span class="cp">#  define USE_SEMAPHORES
 </span><span class="cp">#else
 </span><span class="cp">#  undef USE_SEMAPHORES
-</span><span class="cp">#endif</span></code></pre></div>
-<p>今回の環境は <code>POSIX SEMAPHORE</code> が使えるのでそちらの実装を確認する。</p>
-
+</span><span class="cp">#endif
+</span></code></pre></div><p>今回の環境は <code>POSIX SEMAPHORE</code> が使えるのでそちらの実装を確認する。</p>
 <ul>
-<li><p><code>PyThread_acquire_lock_timed()</code></p>
+<li>
+<p><code>PyThread_acquire_lock_timed()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">PyLockStatus</span>
 <span class="nf">PyThread_acquire_lock_timed</span><span class="p">(</span><span class="n">PyThread_type_lock</span> <span class="n">lock</span><span class="p">,</span> <span class="n">PY_TIMEOUT_T</span> <span class="n">microseconds</span><span class="p">,</span>
                             <span class="kt">int</span> <span class="n">intr_flag</span><span class="p">)</span>
@@ -1080,29 +1046,23 @@
                 <span class="n">microseconds</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
             <span class="p">}</span>
         <span class="p">}</span>
-    <span class="p">}</span></code></pre></div></li>
+    <span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p>タイムアウトの残り時間に応じて <code>sem_timedwait</code> , <code>sem_trywait</code> , <code>sem_wait</code> を使い分ける。</p>
-
 <p>いずれも、POSIX SEMAPHORE として提供されている:</p>
-
-<p><a href="https://linuxjm.osdn.jp/html/glibc-linuxthreads/man3/sem_init.3.html" target="_blank">SEMAPHORES</a></p>
-
-<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/sem_wait.3.html" target="_blank">SEM_WAIT</a></p>
-
+<p><a href="https://linuxjm.osdn.jp/html/glibc-linuxthreads/man3/sem_init.3.html" target="_blank" rel="noopener">SEMAPHORES</a></p>
+<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/sem_wait.3.html" target="_blank" rel="noopener">SEM_WAIT</a></p>
 <ul>
 <li><code>sem_wait</code> : セマフォ減算。ブロッキング。</li>
 <li><code>sem_trywait</code> : セマフォ減算。ノンブロッキング。</li>
 <li><code>sem_timedwait</code> : セマフォ減算。ブロックのタイムアウトを設定可能。</li>
 </ul>
-
 <p>つまり、 <code>lockobject</code> の <code>acquire</code> は、セマフォを獲得する。</p>
-
 <p>続いて、 <code>release</code> を見る。</p>
-
 <ul>
-<li><p><code>lock_PyThread_release_lock()</code></p>
+<li>
+<p><code>lock_PyThread_release_lock()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:167
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
 <span class="nf">lock_PyThread_release_lock</span><span class="p">(</span><span class="n">lockobject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">Py_UNUSED</span><span class="p">(</span><span class="n">ignored</span><span class="p">))</span>
@@ -1124,9 +1084,10 @@
 </span><span class="s"></span><span class="se">\n</span><span class="s">\
 </span><span class="s">Release the lock, allowing another thread that is blocked waiting for</span><span class="se">\n</span><span class="s">\
 </span><span class="s">the lock to acquire the lock.  The lock must be in the locked state,</span><span class="se">\n</span><span class="s">\
-</span><span class="s">but it needn&#39;t be locked by the same thread that unlocks it.&#34;</span><span class="p">);</span></code></pre></div></li>
-
-<li><p><code>PyThread_release_lock()</code></p>
+</span><span class="s">but it needn&#39;t be locked by the same thread that unlocks it.&#34;</span><span class="p">);</span>
+</code></pre></div></li>
+<li>
+<p><code>PyThread_release_lock()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span>
 <span class="nf">PyThread_release_lock</span><span class="p">(</span><span class="n">PyThread_type_lock</span> <span class="n">lock</span><span class="p">)</span>
 <span class="p">{</span>
@@ -1138,23 +1099,17 @@
 
     <span class="n">status</span> <span class="o">=</span> <span class="n">sem_post</span><span class="p">(</span><span class="n">thelock</span><span class="p">);</span>
     <span class="n">CHECK_STATUS</span><span class="p">(</span><span class="s">&#34;sem_post&#34;</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>sem_post</code> も POSIX SEMAPHORE で提供されている機能である:</p>
-
-<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/sem_post.3.html" target="_blank">SEM_POST</a></p>
-
+<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/sem_post.3.html" target="_blank" rel="noopener">SEM_POST</a></p>
 <ul>
 <li><code>sem_post</code> : セマフォ加算。ブロックしない。</li>
 </ul>
-
 <p>つまり、 <code>lockobject</code> は OS のロック / セマフォ機構のラッパーである。</p>
-
-<h3 id="tstate-lock-の呼び出し"><code>_tstate_lock</code> の呼び出し</h3>
-
+<h3 id="_tstate_lock-の呼び出し"><code>_tstate_lock</code> の呼び出し</h3>
 <p>では、 <code>_tstate_lock</code> の解放はどこで行われているのだろうか。</p>
-
 <p>実は、 <code>Thread._set_tstate_lock()</code> → <code>Thread._set_sentinel()</code> → <code>thread_set_sentinel()</code> において、スレッド消滅時にロックを解放するようにイベントハンドラが登録されている:</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:1211
 </span><span class="c1"></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
@@ -1164,9 +1119,10 @@
     <span class="n">tstate</span><span class="o">-&gt;</span><span class="n">on_delete_data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">wr</span><span class="p">;</span>
     <span class="n">tstate</span><span class="o">-&gt;</span><span class="n">on_delete</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">release_sentinel</span><span class="p">;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="n">lock</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
-<ul>
-<li><p><code>release_sentinel()</code></p>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>
+<p><code>release_sentinel()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:1189
 </span><span class="c1"></span><span class="k">static</span> <span class="kt">void</span>
 <span class="nf">release_sentinel</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">wr_raw</span><span class="p">)</span>
@@ -1188,13 +1144,11 @@
     <span class="cm">/* Deallocating a weakref with a NULL callback only calls
 </span><span class="cm">       PyObject_GC_Del(), which can&#39;t call any Python code. */</span>
     <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">wr</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p><code>PyThread_release_lock()</code> を呼び出し、ロックを解放している。</p>
-
 <p>では、 <code>tstate-&gt;on_delete</code> ハンドラはどこで呼び出されているのだろうか。</p>
-
 <p>これは、 <code>t_bootstrap()</code> の末尾のスレッド終了処理にて行われている。 <code>t_bootstrap()</code> は別スレッド生成時に真っ先に実行される関数であった:</p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Modules/_threadmodule.c:990
 </span><span class="c1"></span><span class="k">static</span> <span class="kt">void</span>
@@ -1204,17 +1158,19 @@
     <span class="n">PyThreadState_Clear</span><span class="p">(</span><span class="n">tstate</span><span class="p">);</span>
     <span class="n">PyThreadState_DeleteCurrent</span><span class="p">();</span>
     <span class="n">PyThread_exit_thread</span><span class="p">();</span>
-<span class="p">}</span></code></pre></div>
-<ul>
-<li><p><code>PyThreadState_DeleteCurrent()</code></p>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>
+<p><code>PyThreadState_DeleteCurrent()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Python/pystate.c:875
 </span><span class="c1"></span><span class="kt">void</span>
 <span class="nf">PyThreadState_DeleteCurrent</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">_PyThreadState_DeleteCurrent</span><span class="p">(</span><span class="o">&amp;</span><span class="n">_PyRuntime</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div></li>
-
-<li><p><code>_PyThreadState_DeleteCurrent()</code></p>
+<span class="p">}</span>
+</code></pre></div></li>
+<li>
+<p><code>_PyThreadState_DeleteCurrent()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Python/pystate.c:857
 </span><span class="c1"></span><span class="k">static</span> <span class="kt">void</span>
 <span class="nf">_PyThreadState_DeleteCurrent</span><span class="p">(</span><span class="n">_PyRuntimeState</span> <span class="o">*</span><span class="n">runtime</span><span class="p">)</span>
@@ -1232,9 +1188,10 @@
     <span class="p">}</span>
     <span class="n">_PyRuntimeGILState_SetThreadState</span><span class="p">(</span><span class="n">gilstate</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
     <span class="n">PyEval_ReleaseLock</span><span class="p">();</span>
-<span class="p">}</span></code></pre></div></li>
-
-<li><p><code>tstate_delete_common()</code></p>
+<span class="p">}</span>
+</code></pre></div></li>
+<li>
+<p><code>tstate_delete_common()</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// Python/pystate.c:808
 </span><span class="c1"></span><span class="cm">/* Common code for PyThreadState_Delete() and PyThreadState_DeleteCurrent() */</span>
 <span class="k">static</span> <span class="kt">void</span>
@@ -1259,26 +1216,20 @@
         <span class="n">tstate</span><span class="o">-&gt;</span><span class="n">on_delete</span><span class="p">(</span><span class="n">tstate</span><span class="o">-&gt;</span><span class="n">on_delete_data</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="n">PyMem_RawFree</span><span class="p">(</span><span class="n">tstate</span><span class="p">);</span>
-<span class="p">}</span></code></pre></div></li>
+<span class="p">}</span>
+</code></pre></div></li>
 </ul>
-
 <p>ここで <code>tstate-&gt;on_delete</code> に <code>tstate-&gt;on_delete_data</code> が渡されて実行されていることがわかる。</p>
-
 <h3 id="まとめ-1">まとめ</h3>
-
 <ul>
 <li>別スレッドが生成され、アプリケーションコードが走る直前にロックが獲得される</li>
 <li>アプリケーションコードの実行が終わり、スレッドが死ぬ寸前にロックが解放される</li>
 <li><code>Thread.join()</code> は、このロックに対してブロッキングの獲得を試みることで、スレッドが終了するまで処理をブロックしている</li>
 </ul>
-
 <h1 id="参考">参考</h1>
-
-<p><a href="https://he11olx.com/2018/08/04/1.CPython3.6%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/1.13.Python%20%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%BA%E5%88%B6/" target="_blank">【CPython3.6源码分析】Python 多线程机制</a></p>
-
-<hr />
-
-<p><a href="https://www.notion.so/draft-threading-internal-c4fb99db9a554259b513d1d5ebbc1888" target="_blank">[draft] threading internal</a></p>
+<p><a href="https://he11olx.com/2018/08/04/1.CPython3.6%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/1.13.Python%20%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%9C%BA%E5%88%B6/" target="_blank" rel="noopener">【CPython3.6源码分析】Python 多线程机制</a></p>
+<hr>
+<p><a href="https://www.notion.so/draft-threading-internal-c4fb99db9a554259b513d1d5ebbc1888" target="_blank" rel="noopener">[draft] threading internal</a></p>
 </div>
                     <div class="post_footer">
                         

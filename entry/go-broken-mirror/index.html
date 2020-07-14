@@ -97,24 +97,16 @@
                         <h2><a href='/entry/go-broken-mirror/'>Go Module Mirror から壊れたパッケージが落ちてくる</a></h2>
                         <span class="date">2020.06.21</span>
                     </div>
-                    <div class="post_content markdown">
-
-<h1 id="tl-dr">TL;DR</h1>
-
+                    <div class="post_content markdown"><h1 id="tldr">TL;DR</h1>
 <ul>
 <li>パッケージのメンテナがリリースを間違えるとミラーから永遠に壊れたパッケージが落ちてくるのでユーザーは気をつけよう</li>
-
-<li><p>パッケージをリリースする人は一度ミラーされたバージョンは永遠に消えないのでかなり気をつけよう</p>
-<pre><code>$ go version
-go version go1.14.1 darwin/amd64</code></pre></li>
+<li>パッケージをリリースする人は一度ミラーされたバージョンは永遠に消えないのでかなり気をつけよう</li>
 </ul>
-
-<h1 id="概要">概要</h1>
-
+<pre><code>$ go version
+go version go1.14.1 darwin/amd64
+</code></pre><h1 id="概要">概要</h1>
 <p>今日、Go 向け Discord クライアントライブラリの <code>DiscordGo</code> にアップデートが降ってきました:</p>
-
-<p><a href="https://github.com/bwmarrin/discordgo/releases/tag/v0.21.0" target="_blank">bwmarrin/discordgo</a></p>
-
+<p><a href="https://github.com/bwmarrin/discordgo/releases/tag/v0.21.0" target="_blank" rel="noopener">bwmarrin/discordgo</a></p>
 <p>さて、早速自身のプロジェクトの依存関係のアップデートを試みます:</p>
 <pre><code>$ go get -u github.com/bwmarrin/discordgo
 go: downloading github.com/bwmarrin/discordgo v0.21.0
@@ -126,15 +118,11 @@ go: golang.org/x/crypto upgrade =&gt; v0.0.0-20200604202706-70a84ac30bf9
 go: golang.org/x/sys upgrade =&gt; v0.0.0-20200620081246-981b61492c35
 # github.com/bwmarrin/discordgo
 ../../../../go/pkg/mod/github.com/bwmarrin/discordgo@v0.21.0/wsapi.go:852:19: (*Session).Close redeclared in this block
-        previous declaration at ../../../../go/pkg/mod/github.com/bwmarrin/discordgo@v0.21.0/wsapi.go:846:6</code></pre>
-<p>なんと、ライブラリのビルドに失敗してしまいました。</p>
-
+        previous declaration at ../../../../go/pkg/mod/github.com/bwmarrin/discordgo@v0.21.0/wsapi.go:846:6
+</code></pre><p>なんと、ライブラリのビルドに失敗してしまいました。</p>
 <h1 id="原因を探る">原因を探る</h1>
-
 <p>壊れたバージョンをそのままリリースしてしまったのでしょうか。GitHub でホストされているコードを確認します:</p>
-
-<p><a href="https://github.com/bwmarrin/discordgo/blob/cead8c70f6d1095cf7798efc223ec364a34dd14e/wsapi.go#L846" target="_blank">bwmarrin/discordgo</a></p>
-
+<p><a href="https://github.com/bwmarrin/discordgo/blob/cead8c70f6d1095cf7798efc223ec364a34dd14e/wsapi.go#L846" target="_blank" rel="noopener">bwmarrin/discordgo</a></p>
 <p><code>wsapi.go:846</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Close closes a websocket and stops all listening/heartbeat goroutines.
 </span><span class="c1">// TODO: Add support for Voice WS/UDP
@@ -149,11 +137,9 @@ go: golang.org/x/sys upgrade =&gt; v0.0.0-20200620081246-981b61492c35
 
 	<span class="nx">s</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">LogInformational</span><span class="p">,</span> <span class="s">&#34;called&#34;</span><span class="p">)</span>
 	<span class="nx">s</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
-<span class="o">...</span></code></pre></div>
-<p>特に問題があるようには見えません。</p>
-
+<span class="o">...</span>
+</code></pre></div><p>特に問題があるようには見えません。</p>
 <p>では、実際にダウンロードされたソースコードを見てみます。</p>
-
 <p><code>$GOPATH/pkg/mod/github.com/bwmarrin/discordgo@v0.21.0/wsapi.go:846</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Session</span><span class="p">)</span> <span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nf">CloseWithCode</span><span class="p">(</span><span class="nx">websocket</span><span class="p">.</span><span class="nx">CloseNormalClosure</span><span class="p">)</span>
@@ -163,25 +149,17 @@ go: golang.org/x/sys upgrade =&gt; v0.0.0-20200620081246-981b61492c35
 </span><span class="c1">// TODO: Add support for Voice WS/UDP
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Session</span><span class="p">)</span> <span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nf">CloseWithCode</span><span class="p">(</span><span class="nx">websocket</span><span class="p">.</span><span class="nx">CloseNormalClosure</span><span class="p">)</span>
-<span class="p">}</span></code></pre></div>
-<p>なんと、<strong>壊れたコードがダウンロードされているのです</strong>。</p>
-
+<span class="p">}</span>
+</code></pre></div><p>なんと、<strong>壊れたコードがダウンロードされているのです</strong>。</p>
 <h1 id="go-module-mirror">Go Module Mirror</h1>
-
 <p>Go 1.13 以降では、モジュールをダウンロードする際に <code>Go Module Mirror</code> を使うようになりました:</p>
-
-<p><a href="https://github.com/golang/go/wiki/Modules#go-113" target="_blank">golang/go</a></p>
-
+<p><a href="https://github.com/golang/go/wiki/Modules#go-113" target="_blank" rel="noopener">golang/go</a></p>
 <blockquote>
-<p>The go tool now defaults to downloading modules from the public Go module mirror at <a href="https://proxy.golang.org/" target="_blank">https://proxy.golang.org</a>, and also defaults to validating downloaded modules (regardless of source) against the public Go checksum database at <a href="https://sum.golang.org/" target="_blank">https://sum.golang.org</a>.</p>
+<p>The go tool now defaults to downloading modules from the public Go module mirror at <a href="https://proxy.golang.org/" target="_blank" rel="noopener">https://proxy.golang.org</a>, and also defaults to validating downloaded modules (regardless of source) against the public Go checksum database at <a href="https://sum.golang.org/" target="_blank" rel="noopener">https://sum.golang.org</a>.</p>
 </blockquote>
-
 <p><code>proxy.golang.org</code> からソースコードのミラーを落とし、 <code>sum.golang.org</code> データベースに対してチェックサムの検証を行います。</p>
-
 <p>つまり、今回は Go Module Mirror から壊れたソースコードが落ちてきている疑いがあります。実際に確認をしてみます。</p>
-
-<p><a href="https://proxy.golang.org/github.com/bwmarrin/discordgo/@v/v0.21.0.zip" target="_blank">https://proxy.golang.org/github.com/bwmarrin/discordgo/@v/v0.21.0.zip</a> にアクセスすると、ミラーされているソースコードが落ちてきます。これを展開し、中身を確認します:</p>
-
+<p><a href="https://proxy.golang.org/github.com/bwmarrin/discordgo/@v/v0.21.0.zip" target="_blank" rel="noopener">https://proxy.golang.org/github.com/bwmarrin/discordgo/@v/v0.21.0.zip</a> にアクセスすると、ミラーされているソースコードが落ちてきます。これを展開し、中身を確認します:</p>
 <p><code>wsapi.go:846</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Session</span><span class="p">)</span> <span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nf">CloseWithCode</span><span class="p">(</span><span class="nx">websocket</span><span class="p">.</span><span class="nx">CloseNormalClosure</span><span class="p">)</span>
@@ -191,41 +169,25 @@ go: golang.org/x/sys upgrade =&gt; v0.0.0-20200620081246-981b61492c35
 </span><span class="c1">// TODO: Add support for Voice WS/UDP
 </span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Session</span><span class="p">)</span> <span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nf">CloseWithCode</span><span class="p">(</span><span class="nx">websocket</span><span class="p">.</span><span class="nx">CloseNormalClosure</span><span class="p">)</span>
-<span class="p">}</span></code></pre></div>
-<p><code>go get</code> で落ちてきたものと全く同じ、壊れたコードです。</p>
-
+<span class="p">}</span>
+</code></pre></div><p><code>go get</code> で落ちてきたものと全く同じ、壊れたコードです。</p>
 <h1 id="壊れたコードがミラーされている">壊れたコードがミラーされている</h1>
-
 <p>なぜ壊れたコードが Go Module Mirror や Go Checksum Database に登録されてしまったのでしょうか。</p>
-
 <p>リリースされたブランチを見てみると、実は一度壊れたバージョンがリリースされてしまったのではないかと推察できます。</p>
-
 <p>現在の <code>v0.21.0</code> タグの指すコミット:</p>
-
-<p><a href="https://github.com/bwmarrin/discordgo/commit/cead8c70f6d1095cf7798efc223ec364a34dd14e" target="_blank">Fix double commit on merge · bwmarrin/discordgo@cead8c7</a></p>
-
+<p><a href="https://github.com/bwmarrin/discordgo/commit/cead8c70f6d1095cf7798efc223ec364a34dd14e" target="_blank" rel="noopener">Fix double commit on merge · bwmarrin/discordgo@cead8c7</a></p>
 <p>1つ前のコミット:</p>
-
-<p><a href="https://github.com/bwmarrin/discordgo/commit/1294b313b912a44ea9e94860b9b041a1d9fd1029" target="_blank">Release version v0.21.0 · bwmarrin/discordgo@1294b31</a></p>
-
+<p><a href="https://github.com/bwmarrin/discordgo/commit/1294b313b912a44ea9e94860b9b041a1d9fd1029" target="_blank" rel="noopener">Release version v0.21.0 · bwmarrin/discordgo@1294b31</a></p>
 <p>おそらく、現在の <code>v0.21.0</code> タグがされたコミットの1つ前のコミットが一度リリースされ、後から現在のコミットへタグを張り替えたと考えられますが、 <code>git reflog</code> できないので真相はわかりません。</p>
-
 <p>また、 Checksum Database への登録や、 Module Mirror へミラーされるタイミング等が明確に説明されたドキュメントを見つけられていません。</p>
-
 <p>以下のページより:</p>
-
-<p><a href="https://syfm.hatenablog.com/entry/2019/08/10/170730" target="_blank">Go 1.13 に向けて知っておきたい Go Modules とそれを取り巻くエコシステム - blog.syfm</a></p>
-
+<p><a href="https://syfm.hatenablog.com/entry/2019/08/10/170730" target="_blank" rel="noopener">Go 1.13 に向けて知っておきたい Go Modules とそれを取り巻くエコシステム - blog.syfm</a></p>
 <blockquote>
 <p>しかし、sumdb が存在していても、世界中で初めてあるモジュールを使用する場合はその真正性をチェックできないという問題はあります。</p>
 </blockquote>
-
 <p>とあるように、Module Mirror は Checksum Database への初めてリクエストがあった際にミラーや登録が行われていると考えられますが、公式のドキュメントをご存知でしたら是非ご教示ください。</p>
-
 <h1 id="回避">回避</h1>
-
 <p>ユーザとしてできる回避策としては、一時的に Go Module Mirror を利用せず、ツリーから直接パッケージを取得すれば問題はありません:</p>
-
 <p><code>fish shell</code> なので <code>env GOPROXY=direct</code> としていますが、 <code>bash</code> 等なら <code>GOPROXY=direct</code> としてください ( <code>env</code> 不要)</p>
 <pre><code>$ go clean --modcache
 $ env GOPROXY=direct go get github.com/bwmarrin/discordgo@v0.21.0
@@ -239,32 +201,21 @@ This download does NOT match the one reported by the checksum server.
 The bits may have been replaced on the origin server, or an attacker may
 have intercepted the download attempt.
 
-For more information, see &#39;go help module-auth&#39;.</code></pre>
-<p><code>go clean --modcache</code> を行わないと、先程ダウンロードされた壊れたソースコードに対してビルドを試みるために失敗します。</p>
-
+For more information, see 'go help module-auth'.
+</code></pre><p><code>go clean --modcache</code> を行わないと、先程ダウンロードされた壊れたソースコードに対してビルドを試みるために失敗します。</p>
 <p>また、当然 Checksum Database に対しての検証は失敗するため、セキュリティエラーを吐きます。</p>
-
 <h2 id="根本的な解決">根本的な解決</h2>
-
 <p>結構ありがちな問題らしく、 <code>proxy.golang.org</code> へブラウザからアクセスした際に閲覧できる FAQ に記載があります:</p>
-
-<p><a href="https://proxy.golang.org/" target="_blank">Go modules services</a></p>
-
+<p><a href="https://proxy.golang.org/" target="_blank" rel="noopener">Go modules services</a></p>
 <blockquote>
 <p>I removed a bad release from my repository but it still appears in the mirror, what should I do?
 Whenever possible, the mirror aims to cache content in order to avoid breaking builds for people that depend on your package, so this bad release may still be available in the mirror even if it is not available at the origin. The same situation applies if you delete your entire repository. We suggest creating a new version and encouraging people to use that one instead.</p>
 </blockquote>
-
 <p>ミラーされたパッケージを修正や削除する方法は無いようです。</p>
-
 <p>そのため、パッケージのメンテナに新しいリリースを作成してもらうのが現状ではベターだと考えられます。</p>
-
 <p>今回は Issue を作成しました:</p>
-
-<p><a href="https://github.com/bwmarrin/discordgo/issues/783" target="_blank">v0.21.0 mirror hosted by proxy.golang.org is broken · Issue #783 · bwmarrin/discordgo</a></p>
-
+<p><a href="https://github.com/bwmarrin/discordgo/issues/783" target="_blank" rel="noopener">v0.21.0 mirror hosted by proxy.golang.org is broken · Issue #783 · bwmarrin/discordgo</a></p>
 <h1 id="まとめ">まとめ</h1>
-
 <p>Module Mirror が導入された時より、「いつか壊れたリリース降ってくるんじゃないか…」と思っていましたが、実際に降ってきてしまったため、良い機会になりました。パッケージをリリースする際は気をつけましょう。</p>
 </div>
                     <div class="post_footer">
