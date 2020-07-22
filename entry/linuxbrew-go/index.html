@@ -114,7 +114,7 @@
 <p>Linuxbrew で入れた Go がバイナリのインタプリタ (ダイナミックリンカ) を変なものに設定しているのでランタイム環境で <strong>ダイナミックリンカ</strong> が存在しない事に対して <code>no such file or directory</code> と怒られている。</p>
 <h2 id="ダイナミックリンク">ダイナミックリンク</h2>
 <p>Go コンパイラは、デフォルトでスタティックリンクされたバイナリを吐き出すが、 <code>cgo</code> を用いたコードが含まれているとダイナミックリンクされたバイナリを出力するらしい<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
-<p>今回は、AWS Lambda で動かすために <code>[github.com/aws/aws-lambda-go/lambda](http://github.com/aws/aws-lambda-go/lambda)</code> パッケージを用いていたが、このパッケージは <code>net</code> パッケージに依存しており、 <code>net</code> パッケージが <code>cgo</code> を利用しているために吐き出されるバイナリがダイナミックリンクされたものになったと考えられる。</p>
+<p>今回は、AWS Lambda で動かすために <a href="http://github.com/aws/aws-lambda-go/lambda" target="_blank" rel="noopener"><code>github.com/aws/aws-lambda-go/lambda</code></a> パッケージを用いていたが、このパッケージは <code>net</code> パッケージに依存しており、 <code>net</code> パッケージが <code>cgo</code> を利用しているために吐き出されるバイナリがダイナミックリンクされたものになったと考えられる。</p>
 <h2 id="linuxbrew-の-go">Linuxbrew の Go</h2>
 <p>ようやく本題に入る。</p>
 <p>ダイナミックリンクされたバイナリは、実行時にダイナミックリンカが必要であり、どのダイナミックリンカを利用するかはバイナリ中の <code>.interp</code> セクションで指定されている。この値は <code>file</code> コマンドで確認することができる。</p>
