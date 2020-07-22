@@ -3,6 +3,46 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://note.sarisia.cc/entry/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/go/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/homebrew/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/linux/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/linuxbrew/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/entry/linuxbrew-go/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/</loc>
+    <lastmod>2020-07-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://note.sarisia.cc/tags/discord/</loc>
     <lastmod>2020-07-15T00:00:00+00:00</lastmod>
   </url>
@@ -13,22 +53,7 @@
   </url>
   
   <url>
-    <loc>https://note.sarisia.cc/entry/</loc>
-    <lastmod>2020-07-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://note.sarisia.cc/tags/github-actions/</loc>
-    <lastmod>2020-07-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://note.sarisia.cc/</loc>
-    <lastmod>2020-07-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://note.sarisia.cc/tags/</loc>
     <lastmod>2020-07-15T00:00:00+00:00</lastmod>
   </url>
   
@@ -65,11 +90,6 @@
   <url>
     <loc>https://note.sarisia.cc/entry/github-pages-url/</loc>
     <lastmod>2020-06-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://note.sarisia.cc/tags/go/</loc>
-    <lastmod>2020-06-21T00:00:00+00:00</lastmod>
   </url>
   
   <url>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>Linuxbrew で入れた Go でビルドしたバイナリは可搬性が無い ｜ NOTE.SARISIA.CC</title>
+	
+    
+    
+    <meta name="description" content="TL;DR Linuxbrew で入れた Go でビルドしたダイナミックリンクされたバイナリは大抵別マシンで動かない 事の発端 AWS Lambda に入門しようと思い、適当なコードを Go で書いてビ" />
+    
+
+    
+
+    <meta property="og:title" content="Linuxbrew で入れた Go でビルドしたバイナリは可搬性が無い" />
+<meta property="og:description" content="TL;DR Linuxbrew で入れた Go でビルドしたダイナミックリンクされたバイナリは大抵別マシンで動かない 事の発端 AWS Lambda に入門しようと思い、適当なコードを Go で書いてビ" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/linuxbrew-go/" />
+<meta property="article:published_time" content="2020-07-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-22T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>NOTE.SARISIA.CC</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/linuxbrew-go/'>Linuxbrew で入れた Go でビルドしたバイナリは可搬性が無い</a></h2>
+                        <span class="date">2020.07.22</span>
+                    </div>
+                    <div class="post_content markdown"><h1 id="tldr">TL;DR</h1>
+<p>Linuxbrew で入れた Go でビルドしたダイナミックリンクされたバイナリは大抵別マシンで動かない</p>
+<h1 id="事の発端">事の発端</h1>
+<p>AWS Lambda に入門しようと思い、適当なコードを Go で書いてビルドして<a href="https://docs.aws.amazon.com/ja_jp/lambda/latest/dg/golang-package.html" target="_blank" rel="noopener">デプロイパッケージ</a>にしてアップロードして実行したら失敗した上にエラーメッセージが意味不明だった:</p>
+<pre><code>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   timestamp   |                                                                               message                                                                                |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1595370739688 | START RequestId: xxx Version: $LATEST                                                                                               |
+| 1595370739689 | fork/exec /var/task/testbin: no such file or directory: PathError null                                                                                            |
+| 1595370739689 | END RequestId: xxx                                                                                                                  |
+| 1595370739689 | REPORT RequestId: xxx Duration: 0.50 ms Billed Duration: 100 ms Memory Size: 512 MB Max Memory Used: 23 MB Init Duration: 3.14 ms   |
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</code></pre><p>パッケージ内にバイナリは存在しているし、コンソール上でハンドラも適切に設定されているのに <code>no such file or directory</code> はわからない…</p>
+<h1 id="原因">原因</h1>
+<p>Linuxbrew で入れた Go がバイナリのインタプリタ (ダイナミックリンカ) を変なものに設定しているのでランタイム環境で <strong>ダイナミックリンカ</strong> が存在しない事に対して <code>no such file or directory</code> と怒られている。</p>
+<h2 id="ダイナミックリンク">ダイナミックリンク</h2>
+<p>Go コンパイラは、デフォルトでスタティックリンクされたバイナリを吐き出すが、 <code>cgo</code> を用いたコードが含まれているとダイナミックリンクされたバイナリを出力するらしい<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
+<p>今回は、AWS Lambda で動かすために <code>[github.com/aws/aws-lambda-go/lambda](http://github.com/aws/aws-lambda-go/lambda)</code> パッケージを用いていたが、このパッケージは <code>net</code> パッケージに依存しており、 <code>net</code> パッケージが <code>cgo</code> を利用しているために吐き出されるバイナリがダイナミックリンクされたものになったと考えられる。</p>
+<h2 id="linuxbrew-の-go">Linuxbrew の Go</h2>
+<p>ようやく本題に入る。</p>
+<p>ダイナミックリンクされたバイナリは、実行時にダイナミックリンカが必要であり、どのダイナミックリンカを利用するかはバイナリ中の <code>.interp</code> セクションで指定されている。この値は <code>file</code> コマンドで確認することができる。</p>
+<p>ここで、ローカルでは動作していたが Lambda にデプロイしても動かなかったバイナリを確認してみる:</p>
+<pre><code>$ file testbin
+testbin: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /home/sarisia/.linuxbrew/lib/ld.so, Go BuildID=C7ri7ELuMn23zSXLRZ70/tza49RIreu-6rC35hD4y/4uNzsaPiAIEgluqCR5SC/E_CdXkyKKn-ONTIUXAJA, not stripped
+$ ldd testbin
+        linux-vdso.so.1 (0x00007fffe051b000)
+        libpthread.so.0 =&gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fc377db4000)
+        libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fc377bc2000)
+        /home/sarisia/.linuxbrew/lib/ld.so =&gt; /lib64/ld-linux-x86-64.so.2 (0x00007fc377de1000)
+</code></pre><p>インタプリタ (ダイナミックリンカ) として <code>/home/sarisia/.linuxbrew/lib/ld.so</code> が指定されている。こんなものリモート環境にあるはずがない。</p>
+<h2 id="何故">何故</h2>
+<p>実は、何故 Linuxbrew の <code>ld</code> が参照されてしまうのかは原因が分かっていない。</p>
+<p><code>LD_LIBRARY_PATH</code> 等はセットされておらず、どこから <code>~/.linuxbrew/lib</code> が参照されているか分からない。</p>
+<p>ビルド時の出力からリンカの引数を確認する:</p>
+<pre><code>$ go build -x
+...
+/home/sarisia/.linuxbrew/Cellar/go/1.14.4/libexec/pkg/tool/linux_amd64/link -o $WORK/b001/exe/a.out -importcfg $WORK/b001/importcfg.link -buildmode=exe -buildid=C7ri7ELuMn23zSXLRZ70/tza49RIreu-6rC35hD4y/4uNzsaPiAIEgluqCR5SC/C7ri7ELuMn23zSXLRZ70 -extld=gcc-9 /home/sarisia/.cache/go-build/6f/6f404b1d04e8ea7956855a9c485390cc12166c38b1082540b5f23c7de8f46574-d
+</code></pre><p><code>gcc-9</code> は <code>~/.linuxbrew/Homebrew/Library/Homebrew/shims/super/cc</code> を参照しているように見えるが、 Linuxbrew の内部をよく知らないのでご存知の方がいらっしゃいましたら是非教えて下さい。</p>
+<h1 id="解決策">解決策</h1>
+<p>いくつかあるので状況に応じて対応する。</p>
+<h2 id="スタティックリンクさせる">スタティックリンクさせる</h2>
+<p>一番楽な方法。バイナリがスタティックリンクされていればランタイムに依存せず実行できる。</p>
+<p><code>net</code> パッケージは <code>cgo</code> が利用できない際のフォールバック実装を持っているので、そちらを利用すれば良い。 <code>cgo</code> を無効にするには、環境変数を <code>CGO_ENABLED=0</code> に設定する:</p>
+<pre><code>$ CGO_ENABLED=0 go build
+$ file testbin
+testbin: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=e2c96cEh0Furb-jQXPe3/tza49RIreu-6rC35hD4y/4uNzsaPiAIEgluqCR5SC/i0xRPZeJSG9uM89wNRS_, not stripped
+$ ldd testbin
+        not a dynamic executable
+</code></pre><p>スタティックリンクされたバイナリになった。当然依存している共有ライブラリも存在しない。</p>
+<h2 id="linuxbrew-で-go-を入れない">Linuxbrew で Go を入れない</h2>
+<p><code>brew install go</code> した物を使わず、 <a href="http://go.dev" target="_blank" rel="noopener">go.dev</a> から入れたものや、ディストリビューションのリポジトリから入れたものでビルドする。</p>
+<p>ここでは、GitHub Actions でビルドしたバイナリを確認してみる:</p>
+<pre><code>$ file testbin
+testbin: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, Go BuildID=Z6GFdv2uiNpPYLkL1BPg/3kN-MqjuCgKTC0TGWC4o/wP6Kg3NF2wnMoits94nV/avd9kHQHpyrfPJrd2TBW, not stripped
+</code></pre><p>インタプリタが <code>/lib64/ld-linux-x86-64.so.2</code> に設定されており、これは Alpine Linux 等の特殊な環境でなければ存在するため、このバイナリは大抵の環境で実行できる。そのため、Linux でビルドしたバイナリは他マシンに移しても実行できると考えられがちである。実際 Linuxbrew で入れが Go がおかしいだけである。</p>
+<h1 id="まとめ">まとめ</h1>
+<p>根本的な原因が分かっていないのであまり釈然としない。</p>
+<p>とりあえずスタティックバイナリを吐き出すように意識していれば間違いない…と思う。</p>
+<p>Linuxbrew 、便利だけどちょっとつらいですね。</p>
+<h1 id="参考">参考</h1>
+<p><a href="https://www.arp242.net/static-go.html" target="_blank" rel="noopener">Statically compiling Go programs</a></p>
+<p><a href="https://rcmdnk.com/blog/2019/05/08/computer-linux-homebrew/" target="_blank" rel="noopener">Linuxbrew改めHomebrew@Linuxでrelocation errorに対する対処法</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>公式のドキュメントが見つからなかった…ご存知の方がいらっしゃいましたら是非教えて下さい。 <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/go/">Go</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/homebrew/">Homebrew</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/linux/">Linux</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/linuxbrew/">Linuxbrew</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>

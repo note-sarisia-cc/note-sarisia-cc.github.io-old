@@ -6,10 +6,46 @@
     <description>Recent content in Tags on NOTE.SARISIA.CC</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go</title>
+      <link>https://note.sarisia.cc/tags/go/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Homebrew</title>
+      <link>https://note.sarisia.cc/tags/homebrew/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/homebrew/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://note.sarisia.cc/tags/linux/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linuxbrew</title>
+      <link>https://note.sarisia.cc/tags/linuxbrew/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/linuxbrew/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Discord</title>
@@ -62,15 +98,6 @@
       <pubDate>Thu, 25 Jun 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/tags/github/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Go</title>
-      <link>https://note.sarisia.cc/tags/go/</link>
-      <pubDate>Sun, 21 Jun 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://note.sarisia.cc/tags/go/</guid>
       <description></description>
     </item>
     

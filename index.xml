@@ -6,10 +6,19 @@
     <description>Recent content on NOTE.SARISIA.CC</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linuxbrew で入れた Go でビルドしたバイナリは可搬性が無い</title>
+      <link>https://note.sarisia.cc/entry/linuxbrew-go/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/linuxbrew-go/</guid>
+      <description>TL;DR Linuxbrew で入れた Go でビルドしたダイナミックリンクされたバイナリは大抵別マシンで動かない 事の発端 AWS Lambda に入門しようと思い、適当なコードを Go で書いてビ</description>
+    </item>
     
     <item>
       <title>Discord に GitHub Actions の結果を通知するアクションを作った</title>
