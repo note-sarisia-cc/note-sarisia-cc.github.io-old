@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>UWP アプリは localhost へ接続できない ｜ NOTE.SARISIA.CC</title>
+	
+    
+    
+    <meta name="description" content="TL;DR UWP (Windows Store) アプリはデフォルトでループバック (localhost) に接続できないので免除リストに登録する必要がある 概要 Charles で Windows Store アプリ (UWP アプリ) の通信を確認したかった" />
+    
+
+    
+
+    <meta property="og:title" content="UWP アプリは localhost へ接続できない" />
+<meta property="og:description" content="TL;DR UWP (Windows Store) アプリはデフォルトでループバック (localhost) に接続できないので免除リストに登録する必要がある 概要 Charles で Windows Store アプリ (UWP アプリ) の通信を確認したかった" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/uwp-localhost/" />
+<meta property="article:published_time" content="2020-07-29T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-29T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>NOTE.SARISIA.CC</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/uwp-localhost/'>UWP アプリは localhost へ接続できない</a></h2>
+                        <span class="date">2020.07.29</span>
+                    </div>
+                    <div class="post_content markdown"><h1 id="tldr">TL;DR</h1>
+<p>UWP (Windows Store) アプリはデフォルトでループバック (localhost) に接続できないので免除リストに登録する必要がある</p>
+<h1 id="概要">概要</h1>
+<p><a href="https://www.charlesproxy.com/" target="_blank" rel="noopener">Charles</a> で Windows Store アプリ (UWP アプリ) の通信を確認したかったが一向に通信がキャプチャできない. しかも Charles を起動したら UWP アプリだけ一切の通信ができなくなってしまった.</p>
+<h1 id="原因">原因</h1>
+<p>UWP アプリはデフォルトでループバックアドレス (localhost) へのアクセスをブロックされている:</p>
+<p><a href="https://docs.microsoft.com/ja-jp/windows/uwp/communication/interprocess-communication#loopback" target="_blank" rel="noopener">プロセス間通信 (IPC) - UWP applications</a></p>
+<p>Charles や MITM Proxy 等はローカルにプロキシサーバを起動し, Windows のプロキシ設定をそこに向ける. Charles の場合, デフォルトでは <code>127.0.0.1:8888</code> にプロキシサーバが起動し, Windows のプロキシ設定もそこに向けられていた.</p>
+<p>しかし, UWP アプリは <code>127.0.0.1</code> にアクセスできないため, 一切の通信が行えなくなった.</p>
+<h1 id="解決">解決</h1>
+<p>UWP アプリをループバック規制の免除リストに追加する.</p>
+<h2 id="packagefamilyname-を確認"><code>PackageFamilyName</code> を確認</h2>
+<p>Store ページとかディレクトリとか簡単に確認する方法が無いかいろいろ試したが駄目っぽい. 仕方ないので PowerShell を使う:</p>
+<pre><code>PS &gt; Get-AppxPackage | Select -Property Name,PackageFamilyName
+...
+Microsoft.XboxApp                                  Microsoft.XboxApp_8wekyb3d8bbwe
+Microsoft.MinecraftUWP                             Microsoft.MinecraftUWP_8wekyb3d8bbwe
+Microsoft.BingNews                                 Microsoft.BingNews_8wekyb3d8bbwe
+NVIDIACorp.NVIDIAControlPanel                      NVIDIACorp.NVIDIAControlPanel_56jybvy8sckqj
+...
+</code></pre><p>名前で当たりを付けるなら:</p>
+<pre><code>PS &gt; PS &gt; Get-AppxPackage | Select -Property Name,PackageFamilyName | Select-String &quot;minecraft&quot;
+@{Name=Microsoft.MinecraftUWP; PackageFamilyName=Microsoft.MinecraftUWP_8wekyb3d8bbwe}
+</code></pre><p><code>Name</code> にも <code>PackageFamilyName</code> にもアプリ名が含まれていないアプリもあったので気合でなんとかする必要もあるかもしれない.</p>
+<h2 id="リストへ追加">リストへ追加</h2>
+<p>管理者権限が必要.</p>
+<p>試しに Minecraft を追加してみる.</p>
+<pre><code>PS &gt; CheckNetIsolation.exe LoopbackExempt -a -n=&quot;Microsoft.MinecraftUWP_8wekyb3d8bbwe&quot;
+OK.
+</code></pre><p>確認する.</p>
+<pre><code>PS &gt; CheckNetIsolation.exe LoopbackExempt -s
+[1] -----------------------------------------------------------------
+    Name: microsoft.minecraftuwp_8wekyb3d8bbwe
+    SID:  S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436
+
+[2] -----------------------------------------------------------------
+...
+</code></pre><p>追加できているので, アプリでループバックへ接続できるか試す.</p>
+<h1 id="余談">余談</h1>
+<p>Minecraft for Windows 10 (Bedrock Edition) でローカルに建てた <a href="https://www.minecraft.net/en-us/download/server/bedrock/" target="_blank" rel="noopener">Dedicated Server</a> に接続できないのも, これが原因である. サーバに同梱されている README にも同じ対処法が記載されている:</p>
+<blockquote>
+<p>On some systems, when you wish to connect to the server using a client running on the same machine as the server is running on, you will need to exempt the Minecraft client from UWP loopback restrictions:</p>
+</blockquote>
+<pre><code>CheckNetIsolation.exe LoopbackExempt –a –p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436
+</code></pre><p>ドキュメントにはマニフェストをいじれば制限の対象外に出来るような記述があったけれど, UWP いじったことないので適当なことは言えない&hellip;</p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/charles/">Charles</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/mitm/">MITM</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/uwp/">UWP</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/windows/">Windows</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>

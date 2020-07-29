@@ -6,10 +6,19 @@
     <description>Recent content on NOTE.SARISIA.CC</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>UWP アプリは localhost へ接続できない</title>
+      <link>https://note.sarisia.cc/entry/uwp-localhost/</link>
+      <pubDate>Wed, 29 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/uwp-localhost/</guid>
+      <description>TL;DR UWP (Windows Store) アプリはデフォルトでループバック (localhost) に接続できないので免除リストに登録する必要がある 概要 Charles で Windows Store アプリ (UWP アプリ) の通信を確認したかった</description>
+    </item>
     
     <item>
       <title>Linuxbrew で入れた Go でビルドしたバイナリは可搬性が無い</title>
