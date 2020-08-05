@@ -3,17 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://note.sarisia.cc/tags/charles/</loc>
-    <lastmod>2020-07-29T00:00:00+00:00</lastmod>
+    <loc>https://note.sarisia.cc/entry/</loc>
+    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://note.sarisia.cc/entry/</loc>
-    <lastmod>2020-07-29T00:00:00+00:00</lastmod>
+    <loc>https://note.sarisia.cc/entry/linuxbrew-emscripten/</loc>
+    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://note.sarisia.cc/</loc>
+    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/charles/</loc>
     <lastmod>2020-07-29T00:00:00+00:00</lastmod>
   </url>
   

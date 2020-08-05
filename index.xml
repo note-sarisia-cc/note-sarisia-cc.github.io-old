@@ -6,10 +6,19 @@
     <description>Recent content on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 29 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linuxbrew で emscripten を導入する</title>
+      <link>https://note.sarisia.cc/entry/linuxbrew-emscripten/</link>
+      <pubDate>Wed, 05 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/linuxbrew-emscripten/</guid>
+      <description>&lt;p&gt;WSL2 上の Ubuntu に Linuxbrew で &lt;code&gt;emscripten&lt;/code&gt; を入れようとしたときにコケたのでメモ.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>UWP アプリは localhost へ接続できない</title>
