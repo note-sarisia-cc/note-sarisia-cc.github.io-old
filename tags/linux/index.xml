@@ -6,10 +6,19 @@
     <description>Recent content in Linux on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 08 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Arch Linux Install Battle</title>
+      <link>https://note.sarisia.cc/entry/arch-linux-install-battle/</link>
+      <pubDate>Sat, 08 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/arch-linux-install-battle/</guid>
+      <description>Arch Linux 何度もインストールしているのに毎回何かしら忘れて敗北してしまうのでさすがにやることメモを作っておく. CLI のみ, 最低限リモートから SSH で作業で</description>
+    </item>
     
     <item>
       <title>Linuxbrew で入れた Go でビルドしたバイナリは可搬性が無い</title>

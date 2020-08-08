@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>Arch Linux Install Battle ｜ loop.run_forever()</title>
+	
+    
+    
+    <meta name="description" content="Arch Linux 何度もインストールしているのに毎回何かしら忘れて敗北してしまうのでさすがにやることメモを作っておく. CLI のみ, 最低限リモートから SSH で作業で" />
+    
+
+    
+
+    <meta property="og:title" content="Arch Linux Install Battle" />
+<meta property="og:description" content="Arch Linux 何度もインストールしているのに毎回何かしら忘れて敗北してしまうのでさすがにやることメモを作っておく. CLI のみ, 最低限リモートから SSH で作業で" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/arch-linux-install-battle/" />
+<meta property="article:published_time" content="2020-08-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-08T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>loop.run_forever()</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/arch-linux-install-battle/'>Arch Linux Install Battle</a></h2>
+                        <span class="date">2020.08.08</span>
+                    </div>
+                    <div class="post_content markdown"><p>Arch Linux 何度もインストールしているのに毎回何かしら忘れて敗北してしまうのでさすがにやることメモを作っておく.</p>
+<p>CLI のみ, 最低限リモートから SSH で作業できるような環境を整えるまでが目標.</p>
+<h1 id="インストール">インストール</h1>
+<p>インストールガイドの通りにやるだけですね.</p>
+<p><a href="https://wiki.archlinux.jp/index.php/%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%82%AC%E3%82%A4%E3%83%89" target="_blank" rel="noopener">インストールガイド</a></p>
+<h3 id="インターネット接続">インターネット接続</h3>
+<p>有線なら起動時に勝手に <code>dhcpcd</code> してくれるので既に繋がっているはず.</p>
+<p>無線は Archiso なら <code>networkmanager</code>, <code>wpa_supplicant</code> あたりは使える. どちらもワンライナーでなんとかなる. 今回は <code>wpa_supplicant</code>.</p>
+<p><a href="https://wiki.archlinux.jp/index.php/Wpa_supplicant" target="_blank" rel="noopener">wpa_supplicant</a></p>
+<pre><code># ip link
+# wpa_supplicant -B -i &lt;interface&gt; -c &lt;(wpa_passphrase &lt;YOUR_SSID&gt; &lt;YOUR_PASSPHRASE&gt;)
+# ping archlinux.jp
+</code></pre><h3 id="システムクロック">システムクロック</h3>
+<pre><code># timiedatectl set-ntp true
+</code></pre><h3 id="パーティショニング">パーティショニング</h3>
+<p>最低限 EFI System と ext4 を作れば良い.</p>
+<pre><code># fdisk -l
+# fdisk /dev/sda
+# mkfs.fat -F32 /dev/sda1
+# mkfs.ext4 /dev/sda2
+# mount /dev/sda2 /mnt
+# mkdir /mnt/boot
+# mount /dev/sda1 /mnt/boot
+</code></pre><h3 id="pacstrap"><code>pacstrap</code></h3>
+<pre><code># pacstrap /mnt base linux linux-firmware
+</code></pre><h3 id="諸設定">諸設定</h3>
+<pre><code># genfstab -U /mnt &gt;&gt; /mnt/etc/fstab
+# arch-chroot /mnt
+# ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+# hwclock --systohc
+
+# nano /etc/locale.gen
+# locale-gen
+
+# echo &quot;LANG=en_US.UTF-8&quot; &gt; /etc/locale.conf
+# echo HOSTNAME &gt; /etc/hostname
+# nano /etc/hosts
+# passwd
+</code></pre><h2 id="ブートローダ">ブートローダ</h2>
+<p>Ubuntu や Debian に甘やかされているとなぜか忘れてしまうブートローダ.</p>
+<p><code>grub</code> は単純な構成ならブートエントリを書かなくて済むのでいつもこれでやっている.</p>
+<p><a href="https://wiki.archlinux.jp/index.php/GRUB" target="_blank" rel="noopener">GRUB</a></p>
+<pre><code># pacman -S grub efibootmgr
+# grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+</code></pre><h3 id="ucode"><code>ucode</code></h3>
+<p>いつもすぐに設定ファイルを生成したくなってしまい, マイクロコードを入れ忘れて二度手間になる. <code>intel-ucode</code> または <code>amd-ucode</code> を導入.</p>
+<p><a href="https://wiki.archlinux.jp/index.php/%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B3%E3%83%BC%E3%83%89" target="_blank" rel="noopener">マイクロコード</a></p>
+<p>パッケージを入れたら <code>grub</code> 設定を生成する:</p>
+<pre><code># pacman -S intel-ucode
+# grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre><p>基本的なインストールはこれで終了.</p>
+<h1 id="インストール後設定">インストール後設定</h1>
+<h2 id="インターネット">インターネット</h2>
+<p>有線, 無線どちらのツールも入れておいたほうがいい. <code>dhcpcd</code> を入れ忘れて無線でパッケージを取ろうとして <code>wpa_supplicant</code> を入れ忘れて詰んでしまった (1敗).</p>
+<p><code>networkmanager</code> 入れておけば何でもできて安心かもしれない.</p>
+<pre><code># pacman -S wpa_supplicant dhcpcd
+# systemctl enable dhcpcd@eth1
+</code></pre><h2 id="sshd"><code>sshd</code></h2>
+<p>HID 外したあとに SSH 設定忘れていて孤独のサーバが完成する.</p>
+<p><a href="https://wiki.archlinux.jp/index.php/Secure_Shell" target="_blank" rel="noopener">Secure Shell</a></p>
+<pre><code># pacman -S openssh
+# nano /etc/ssh/sshd_config
+# systemctl enable sshd
+</code></pre><h2 id="ユーザ">ユーザ</h2>
+<p>ユーザを作成する. SSH ルートログインは切っておくべきだが, ここでユーザを作り忘れていると敗北する.</p>
+<pre><code># useradd -G wheel -m sarisia
+# passwd sarisia
+</code></pre><h2 id="sudo"><code>sudo</code></h2>
+<p>今回は完璧だと思っていたのに <code>sudo</code> の設定を忘れていて敗北してしまった. 結構忘れやすいと思う.</p>
+<p><code>visudo</code> を通さないと怖い. エディタは <code>EDITOR</code> 環境変数で変えられる.</p>
+<p><a href="https://wiki.archlinux.jp/index.php/Sudo" target="_blank" rel="noopener">Sudo</a></p>
+<pre><code># pacman -S sudo
+# EDITOR=nano visudo
+</code></pre><h1 id="まとめ">まとめ</h1>
+<p>ここまで設定すれば最低限違和感なくリモート作業できるようになると思う.</p>
+<p>次こそ勝利したい.</p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/arch-linux/">Arch Linux</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/linux/">Linux</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
