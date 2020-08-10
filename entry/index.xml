@@ -6,10 +6,19 @@
     <description>Recent content in Entries on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 08 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 10 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/entry/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>fish スクリプトのデバッグ</title>
+      <link>https://note.sarisia.cc/entry/debugging-fish-script/</link>
+      <pubDate>Mon, 10 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/debugging-fish-script/</guid>
+      <description>fish-shell 3.1.0 のリリースで, スクリプトのデバッグ関連機能が非常に豊富になっている事に今更気づいた. いくつか使ってみたので, 簡単な使い方などをメモ. fish_trace Issue</description>
+    </item>
     
     <item>
       <title>Arch Linux Install Battle</title>

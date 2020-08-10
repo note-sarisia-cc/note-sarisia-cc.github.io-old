@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>fish スクリプトのデバッグ ｜ loop.run_forever()</title>
+	
+    
+    
+    <meta name="description" content="fish-shell 3.1.0 のリリースで, スクリプトのデバッグ関連機能が非常に豊富になっている事に今更気づいた. いくつか使ってみたので, 簡単な使い方などをメモ. fish_trace Issue" />
+    
+
+    
+
+    <meta property="og:title" content="fish スクリプトのデバッグ" />
+<meta property="og:description" content="fish-shell 3.1.0 のリリースで, スクリプトのデバッグ関連機能が非常に豊富になっている事に今更気づいた. いくつか使ってみたので, 簡単な使い方などをメモ. fish_trace Issue" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/debugging-fish-script/" />
+<meta property="article:published_time" content="2020-08-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-10T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>loop.run_forever()</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/debugging-fish-script/'>fish スクリプトのデバッグ</a></h2>
+                        <span class="date">2020.08.10</span>
+                    </div>
+                    <div class="post_content markdown"><p><a href="https://github.com/fish-shell/fish-shell/blob/master/CHANGELOG.rst#fish-310-released-february-12-2020" target="_blank" rel="noopener">fish-shell 3.1.0</a> のリリースで, スクリプトのデバッグ関連機能が非常に豊富になっている事に今更気づいた. いくつか使ってみたので, 簡単な使い方などをメモ.</p>
+<h1 id="fish_trace"><code>fish_trace</code></h1>
+<p><a href="https://github.com/fish-shell/fish-shell/issues/3427" target="_blank" rel="noopener">Issue #3427</a> で提案, <a href="https://github.com/fish-shell/fish-shell/pull/6255" target="_blank" rel="noopener">Pull Request #6255</a> で実装された.</p>
+<p><a href="https://fishshell.com/docs/current/index.html" target="_blank" rel="noopener">Introduction - fish-shell 3.1.2 documentation</a></p>
+<p>bash で <code>set -x</code> を設定した時のようなスクリプト実行のトレースを出力してくれる:</p>
+<blockquote>
+<p>fish_trace, if set and not empty, will cause fish to print commands before they execute, similar to set -x in bash. The trace is printed to the path given by the &ndash;debug-output option to fish (stderr by default).</p>
+</blockquote>
+<p><code>fish_trace</code> 変数を <code>1</code> に設定してスクリプト (関数) を実行するだけ.</p>
+<p><code>test.fish</code> :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">echo</span> <span class="s2">&#34;test script&#34;</span>
+<span class="nb">echo</span> <span class="nv">$USER</span>
+</code></pre></div><pre><code>~&gt; set fish_trace 1
+~&gt; source test.fish
++ source test.fish
++++ echo 'test script'
+test script
++++ echo sarisia
+sarisia
+</code></pre><p><code>fish --debug-output LOG_FILE</code> で指定したログファイルに出力することもできる:</p>
+<pre><code>~&gt; fish --debug-output=fish.log
+~&gt; set fish_trace 1
+~&gt; source test.fish
+test script
+sarisia
+~&gt; cat fish.log
++ source test.fish
++++ echo 'test script'
++++ echo sarisia
++ cat fish.log
+</code></pre><p>変数の展開結果やスクリプトがどこで詰まっているか簡単に確認する時に便利.</p>
+<p><code>--debug-output</code> の代わりに <code>-o</code> も使えると書いてある<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>が実際には動かない. バグ？</p>
+<h1 id="fish---debug"><code>fish --debug</code></h1>
+<p><code>fish --debug=DEBUG_GLOB</code> で指定したカテゴリのログを出力する. 以前のオプション <code>--debug-level</code> でもログを出力できたが, ログレベルについての説明がドキュメントに一切なく謎だった. 今回の改善によってログ出力のコントロールがやりやすくなって便利.</p>
+<p>カテゴリ一覧は <code>fish --print-debug-categories</code> で確認できる:</p>
+<pre><code>~&gt; fish --print-debug-categories
+char-encoding        Character encoding issues
+debug                Debugging aid (on by default)
+env-export           Changes to exported variables
+env-locale           Changes to locale variables
+error                Serious unexpected errors (on by default)
+exec-fork            Calls to fork()
+exec-job-exec        Jobs being executed
+exec-job-status      Jobs changing status
+history              Command history events
+iothread             Background IO thread events
+proc-internal-proc   Internal (non-forked) process events
+proc-job-run         Jobs getting started or continued
+proc-reap-external   Reaping external (forked) processes
+proc-reap-internal   Reaping internal (non-forked) processes
+proc-termowner       Terminal ownership events
+profile-history      History performance measurements
+topic-monitor        Internal details of the topic monitor
+</code></pre><p>カテゴリ指定には <code>glob</code> パターンを利用できる. ドキュメントには一切例がないもののこう書いたら動いた:</p>
+<pre><code># env-localeのみ
+~&gt; fish --debug=env-locale
+env-locale: locale var LANG='en_US.UTF-8'
+env-locale: locale var LANGUAGE missing or empty
+...
+
+# env系すべて
+~&gt; fish --debug=&quot;env-*&quot;
+env-locale: locale var LANG='en_US.UTF-8'
+env-locale: locale var LANGUAGE missing or empty
+...
+env-export: create_export_array() recalc
+
+# env系すべてとhistory
+~&gt; fish --debug=&quot;env-*,history&quot;
+env-locale: locale var LANG='en_US.UTF-8'
+env-locale: locale var LANGUAGE missing or empty
+...
+env-export: create_export_array() recalc
+~&gt; ehistory: Loaded 162 old items
+
+# すべてのログ
+~&gt; fish --debug=&quot;*&quot;
+</code></pre><p><code>fish_trace</code> だけではイマイチ情報が不足しているときに便利. ただ, 膨大な量のログを吐くので, 欲しいカテゴリに当たりをつけたほうがいいかもしれない.</p>
+<p>こちらも <code>--debug-output</code> でログ出力先を制御できる:</p>
+<pre><code>~&gt; fish --debug=&quot;env-*&quot; --debug-output=fish.log
+~&gt; cat fish.log
+env-locale: locale var LANG='en_US.UTF-8'
+env-locale: locale var LANGUAGE missing or empty
+...
+env-export: create_export_array() recalc
+</code></pre><p>やっぱり <code>-o</code> オプション<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>は動作しない.</p>
+<h1 id="まとめ">まとめ</h1>
+<p>fish-shell 3.1 で, カジュアルなトレースも, より詳細なログも非常に取りやすくなった.</p>
+<p>デバッグを活用して良き fish ライフを！</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>ヘルプはこれ: <a href="https://fishshell.com/docs/current/cmds/fish.html#cmd-fish" target="_blank" rel="noopener">https://fishshell.com/docs/current/cmds/fish.html#cmd-fish</a><br>
+Issue 建てた: <a href="https://github.com/fish-shell/fish-shell/issues/7254" target="_blank" rel="noopener">https://github.com/fish-shell/fish-shell/issues/7254</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/fish/">fish</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/shell/">shell</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
