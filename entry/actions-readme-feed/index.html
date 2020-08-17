@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>RSS フィードを GitHub プロフィールに表示する ｜ loop.run_forever()</title>
+	
+    
+    
+    <meta name="description" content="こんにちは. 皆様, GitHub Profile README は使っていますか？ GitHub のプロフィールページに任意の Markdown 文章を表示できるアレです. 私も最初は名前とリンクだけを適当に貼った" />
+    
+
+    
+
+    <meta property="og:title" content="RSS フィードを GitHub プロフィールに表示する" />
+<meta property="og:description" content="こんにちは. 皆様, GitHub Profile README は使っていますか？ GitHub のプロフィールページに任意の Markdown 文章を表示できるアレです. 私も最初は名前とリンクだけを適当に貼った" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/actions-readme-feed/" />
+<meta property="article:published_time" content="2020-08-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-17T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>loop.run_forever()</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/actions-readme-feed/'>RSS フィードを GitHub プロフィールに表示する</a></h2>
+                        <span class="date">2020.08.17</span>
+                    </div>
+                    <div class="post_content markdown"><p>こんにちは.</p>
+<p>皆様, <a href="https://docs.github.com/en/github/setting-up-and-managing-your-github-profile/managing-your-profile-readme" target="_blank" rel="noopener">GitHub Profile README</a> は使っていますか？ GitHub のプロフィールページに任意の Markdown 文章を表示できるアレです.</p>
+<p>私も最初は名前とリンクだけを適当に貼ったページを用意していましたが, <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">GitHub Readme Stats</a> を見つけてから, README のカスタマイズが楽しくなってしまいました.</p>
+<h1 id="ブログの新着記事を表示したい">ブログの新着記事を表示したい</h1>
+<p>本題です.</p>
+<p>GitHub で, 生やした草やリポジトリに加え, README でアピールできるようになった今, プロフィールを見に来てくださった人に最新のブログ記事や Qiita 記事更新をアピールしたくないですか？</p>
+<p>というわけで, RSS フィードから最新記事を取得して Markdown を自動更新する GitHub Actions アクションを作りました<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>:</p>
+<p><a href="https://github.com/marketplace/actions/actions-readme-feed" target="_blank" rel="noopener">Actions Readme Feed - GitHub Marketplace</a></p>
+<h1 id="使い方">使い方</h1>
+<p>基本的にはマーケットプレイスのページに書いてある通りです.</p>
+<p><code>[README.md](http://readme.md)</code> の記事一覧を挿入したい箇所にフラグコメントを突っ込みます:</p>
+<div class="highlight"><pre class="chroma"><code class="language-markdown" data-lang="markdown"><span class="gu">### Recent Blog Posts
+</span><span class="gu"></span><span class="c">&lt;!-- feed start --&gt;</span>
+<span class="c">&lt;!-- feed end --&gt;</span>
+</code></pre></div><p><code>.github/workflows/</code> 以下のワークフローにステップを追加します. コミットまではやらないので気合で頑張ります. <a href="https://github.com/marketplace/actions/add-commit" target="_blank" rel="noopener">この辺</a>のアクションを使うと楽かもしれません&hellip;:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">steps</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>actions/checkout@v2<span class="w">
+</span><span class="w">  </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-readme-feed@v1<span class="w">
+</span><span class="w">    </span><span class="k">with</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">url</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;https://note.sarisia.cc/index.xml&#39;</span><span class="w">
+</span><span class="w">      </span><span class="k">file</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;README.md&#39;</span><span class="w">
+</span><span class="w">  </span>- <span class="k">run</span><span class="p">:</span><span class="w"> </span><span class="sd">|
+</span><span class="sd">      git config --global user.name &#34;${{ github.actor }}&#34;</span><span class="w">
+</span><span class="w">      </span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&#34;${{ github.actor }}@users.noreply.github.com&#34;</span><span class="w">
+</span><span class="w">      </span>git<span class="w"> </span>add<span class="w"> </span>.<span class="w">
+</span><span class="w">      </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&#34;docs: update feed&#34;</span><span class="w"> </span>||<span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">      </span>git<span class="w"> </span>push<span class="w">
+</span></code></pre></div><p>プロフィールページにブログの投稿が追加されます！</p>
+<p><img src="Untitled.png" alt="Untitled.png"></p>
+<h2 id="応用編">応用編</h2>
+<h3 id="qiita-の表示">Qiita の表示</h3>
+<p><code>https://qiita.com/[username]/feed</code> でRSSフィードが取れるので<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, これを <code>url</code> として渡します:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-readme-feed@v1<span class="w">
+</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">url</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;https://qiita.com/sarisia/feed&#39;</span><span class="w">
+</span><span class="w">    </span><span class="k">file</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;README.md&#39;</span><span class="w">
+</span></code></pre></div><h3 id="自動更新">自動更新</h3>
+<p>Workflow を <code>schedule</code> で回してあげれば自動更新できます:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">on</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">schedule</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="k">cron</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0 */6 * * *&#39;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">jobs</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">readme</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">runs-on</span><span class="p">:</span><span class="w"> </span>ubuntu-latest<span class="w">
+</span><span class="w">    </span><span class="k">steps</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>actions/checkout@v2<span class="w">
+</span><span class="w">      </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-readme-feed@v1<span class="w">
+</span></code></pre></div><h1 id="まとめ">まとめ</h1>
+<p>出力のテンプレート機能やフラグ変更など, もっと高度なカスタマイズも出来るようになっているので, <a href="https://github.com/sarisia/actions-readme-feed" target="_blank" rel="noopener">リポジトリページ</a>も参考に是非使ってみてください！</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>実は一週間先を越されていた: <a href="https://github.com/marketplace/actions/readme-the-rss" target="_blank" rel="noopener">README the RSS</a><br>
+が, 多分カスタマイズできるオプションはこっちのほうが多いはず… <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>公式のドキュメントが無いのでいつか急に消滅するかもしれません <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/github/">GitHub</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/github-actions/">GitHub Actions</a>
+                                    
+                                    <a href="https://note.sarisia.cc/tags/markdown/">Markdown</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
