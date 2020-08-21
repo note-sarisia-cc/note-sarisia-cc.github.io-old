@@ -6,10 +6,19 @@
     <description>Recent content on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 17 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 21 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>C.UTF-8 とは何だったのか</title>
+      <link>https://note.sarisia.cc/entry/what-is-c-utf8/</link>
+      <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/what-is-c-utf8/</guid>
+      <description>TL;DR 全ての Linux ディストリビューションが C.UTF-8 持っているわけではないのでつらい. 仮に持っていたとしても標準化されていないので如何なる動作も期待すべきで</description>
+    </item>
     
     <item>
       <title>RSS フィードを GitHub プロフィールに表示する</title>
