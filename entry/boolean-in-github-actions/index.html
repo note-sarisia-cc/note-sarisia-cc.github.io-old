@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>GitHub Actions で真偽値を正しく扱う ｜ loop.run_forever()</title>
+	
+    
+    
+    <meta name="description" content="TL;DR GitHub Actions の if などで用いる比較は型厳密 公式のベストプラクティス等がないのでアクションごとに出力が異なる アクションを使うときはドキュメントを読む," />
+    
+
+    
+
+    <meta property="og:title" content="GitHub Actions で真偽値を正しく扱う" />
+<meta property="og:description" content="TL;DR GitHub Actions の if などで用いる比較は型厳密 公式のベストプラクティス等がないのでアクションごとに出力が異なる アクションを使うときはドキュメントを読む," />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/boolean-in-github-actions/" />
+<meta property="article:published_time" content="2020-09-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-09-03T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="https://note.sarisia.cc/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>loop.run_forever()</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/boolean-in-github-actions/'>GitHub Actions で真偽値を正しく扱う</a></h2>
+                        <span class="date">2020.09.03</span>
+                    </div>
+                    <div class="post_content markdown"><h1 id="tldr">TL;DR</h1>
+<ul>
+<li>GitHub Actions の <code>if</code> などで用いる比較は型厳密</li>
+<li>公式のベストプラクティス等がないのでアクションごとに出力が異なる</li>
+<li>アクションを使うときはドキュメントを読む, アクションを作るときはドキュメントを書こう</li>
+</ul>
+<h1 id="概要">概要</h1>
+<p>値を真偽値 <code>true</code> と比較する以下の <code>if</code> のうち, 条件が真と判定されるのは1つだけ:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span>==<span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c"># false</span><span class="w">
+</span><span class="w"></span><span class="k">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="w"> </span>==<span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c"># false</span><span class="w">
+</span><span class="w"></span><span class="k">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span>==<span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c"># TRUE!</span><span class="w">
+</span><span class="w"></span><span class="k">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="w"> </span>==<span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c"># false</span><span class="w">
+</span></code></pre></div><p>似たように, 値を文字列 <code>'true'</code> と比較する以下の <code>if</code> でも, 条件が真となるのは1つだけ:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span>==<span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="c"># TRUE!</span><span class="w">
+</span><span class="w"></span><span class="k">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="w"> </span>==<span class="w"> </span><span class="s1">&#39;true # false
+</span><span class="s1">if: &#39;</span><span class="m">1</span><span class="s1">&#39; == &#39;</span><span class="kc">true</span><span class="s1">&#39; # false
+</span><span class="s1">if: &#39;</span><span class="m">0</span><span class="s1">&#39; == &#39;</span><span class="kc">true</span>&#39;<span class="w"> </span><span class="c"># false</span><span class="w">
+</span></code></pre></div><p>つまり, GitHub Actions は表現に対して型厳密な比較を行う.</p>
+<h2 id="当たり前だが">当たり前だが&hellip;</h2>
+<p>型厳密な比較は当たり前だが, 加えて, GitHub Actions にはいくつかハマりどころが用意されている.</p>
+<h3 id="outputs-の値は文字列型のみ"><code>outputs</code> の値は文字列型のみ</h3>
+<p><a href="https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context" target="_blank" rel="noopener">Context and expression syntax for GitHub Actions</a></p>
+<p>公式ドキュメントにあるように, アクションの <code>outputs</code> の型は <code>string</code> であり, <code>true</code> や <code>false</code> を出力しても <code>boolean</code> 型にならず, ただの文字列である.</p>
+<h3 id="抽象的等価比較">抽象的等価比較</h3>
+<p><a href="https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#operators" target="_blank" rel="noopener">Context and expression syntax for GitHub Actions</a></p>
+<p>等価比較 (<code>==</code>, <code>!=</code>) において, 左辺と右辺の型が異なる場合, 比較の前に暗黙的な型変換が行われる.</p>
+<p>Actions では, 全ての型を数値に変換する. 変換ルールは上記ページの通りだが, もっとも注意すべきなのは <strong>stringは数値へパースされる</strong> 点である. つまり, <code>'1'</code> などの文字列は, 数値の <code>1</code> へ暗黙的に変換される.</p>
+<p>上記の例で,</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span>==<span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c"># TRUE!</span><span class="w">
+</span></code></pre></div><p>が真と評価されたのもこれが理由である. 左辺の <code>'1'</code> は文字列からパースされた数値 <code>1</code> となり, 右辺の <code>true</code> はキャストルールに基づいて <code>1</code> となる.</p>
+<h3 id="複数のキャストルールの存在">複数のキャストルールの存在</h3>
+<p>前述の等価比較の際のキャストルールの他に, ビルトイン関数内でのキャストルールが別に存在しており, 非常に<strong>紛らわしい.</strong></p>
+<p>ビルトイン関数内でのキャストルールは, すべてを文字列に変換しようとする. 例えば, <code>contains('true', true)</code> は第2引数が <code>'true'</code> に変換される.</p>
+<p>当然, このキャストルールは <code>if</code> などでの評価には適用されない. 雑にドキュメントを読んでいたり, どこかで混ざってしまうとハマる.</p>
+<h3 id="ベストプラクティスが提示されない">ベストプラクティスが提示されない</h3>
+<p>GitHub Actions のドキュメントにベストプラクティスが提示されていないので, 出力の形式はアクションごとにやりたい放題である. 雰囲気で真偽値の <code>outputs</code> を扱うとハマる.</p>
+<h1 id="まとめ">まとめ</h1>
+<p>アクションを使う際, そのアクションが真偽値で出力を行うのなら, <code>true, false</code> で出力するか, または <code>1, 0</code> で出力するかをドキュメントなどでしっかり確認する.</p>
+<p>前者なら:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">if</span><span class="p">:</span><span class="w"> </span>steps.work.outputs.string-output<span class="w"> </span>==<span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w">
+</span></code></pre></div><p>の様に文字列で比較してあげる必要があるし, 後者なら:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">if</span><span class="p">:</span><span class="w"> </span>steps.work.outputs.int-output<span class="w"> </span>==<span class="w"> </span><span class="kc">true</span><span class="w">
+</span></code></pre></div><p>の様に, 文字列ではなく <code>boolean</code> のリテラルを使ってあげないと思ったように動いてくれない.</p>
+<h1 id="余談">余談</h1>
+<p><code>if</code> 内で比較せず, そのままステップの出力をフラグとして扱うことはできない. <strong>すべての文字列が<code>true</code> と評価される</strong>.</p>
+<p>例えば, <code>steps.out-true.outputs.out</code> が <code>true</code> のとき, <code>if: steps.out-true.outputs.out</code> に対して Actions ランナーは以下のように評価を行う:</p>
+<pre><code>##[debug]Evaluating condition for step: 'validate true'
+##[debug]Evaluating: (success() &amp;&amp; steps.out-true.outputs.out)
+##[debug]Evaluating And:
+##[debug]..Evaluating success:
+##[debug]..=&gt; true
+##[debug]..Evaluating Index:
+##[debug]....Evaluating Index:
+##[debug]......Evaluating Index:
+##[debug]........Evaluating steps:
+##[debug]........=&gt; Object
+##[debug]........Evaluating String:
+##[debug]........=&gt; 'out-true'
+##[debug]......=&gt; Object
+##[debug]......Evaluating String:
+##[debug]......=&gt; 'outputs'
+##[debug]....=&gt; Object
+##[debug]....Evaluating String:
+##[debug]....=&gt; 'out'
+##[debug]..=&gt; 'true'
+##[debug]=&gt; 'true'
+##[debug]Expanded: (true &amp;&amp; 'true')
+##[debug]Result: 'true'
+</code></pre><p>もうひとつ, <code>steps.out-one.outputs.out</code> が <code>'1'</code> のとき, <code>if: steps.out-one.outputs.out</code> に対しての Actions ランナーの評価は:</p>
+<pre><code>##[debug]Evaluating condition for step: 'validate one'
+##[debug]Evaluating: (success() &amp;&amp; steps.out-one.outputs.out)
+##[debug]Evaluating And:
+##[debug]..Evaluating success:
+##[debug]..=&gt; true
+##[debug]..Evaluating Index:
+##[debug]....Evaluating Index:
+##[debug]......Evaluating Index:
+##[debug]........Evaluating steps:
+##[debug]........=&gt; Object
+##[debug]........Evaluating String:
+##[debug]........=&gt; 'out-one'
+##[debug]......=&gt; Object
+##[debug]......Evaluating String:
+##[debug]......=&gt; 'outputs'
+##[debug]....=&gt; Object
+##[debug]....Evaluating String:
+##[debug]....=&gt; 'out'
+##[debug]..=&gt; '1'
+##[debug]=&gt; '1'
+##[debug]Expanded: (true &amp;&amp; '1')
+##[debug]Result: '1'
+</code></pre><p>つまり, 等価比較が含まれない場合, Actions は一切の型変換をせず, 値を素通りさせてしまう.</p>
+<p><code>if</code> 内ではちゃんと比較かけましょう.</p>
+</div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://note.sarisia.cc/js/jquery-3.5.1.min.js"></script>
+<link href="https://note.sarisia.cc/css/fancybox.min.css" rel="stylesheet">
+<script src="https://note.sarisia.cc/js/fancybox.min.js"></script>
+<script src="https://note.sarisia.cc/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
