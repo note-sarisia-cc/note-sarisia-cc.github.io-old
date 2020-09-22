@@ -4,31 +4,41 @@
   
   <url>
     <loc>https://note.sarisia.cc/entry/</loc>
-    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-09-23T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://note.sarisia.cc/tags/github/</loc>
-    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-09-23T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://note.sarisia.cc/tags/github-actions/</loc>
-    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-09-23T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://note.sarisia.cc/entry/boolean-in-github-actions/</loc>
-    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+    <loc>https://note.sarisia.cc/entry/github-actions-icu/</loc>
+    <lastmod>2020-09-23T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://note.sarisia.cc/</loc>
-    <lastmod>2020-09-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-09-23T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/tags/node.js/</loc>
+    <lastmod>2020-09-23T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://note.sarisia.cc/tags/</loc>
+    <lastmod>2020-09-23T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/entry/boolean-in-github-actions/</loc>
     <lastmod>2020-09-03T00:00:00+00:00</lastmod>
   </url>
   

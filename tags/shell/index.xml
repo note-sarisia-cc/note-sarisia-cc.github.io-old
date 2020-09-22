@@ -6,11 +6,7 @@
     <description>Recent content in shell on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Aug 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://note.sarisia.cc/tags/shell/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 10 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/tags/shell/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>fish スクリプトのデバッグ</title>
       <link>https://note.sarisia.cc/entry/debugging-fish-script/</link>

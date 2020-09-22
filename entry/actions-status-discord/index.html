@@ -120,37 +120,37 @@
 <li>
 <p>ステータス通知</p>
 <p>ステータスの成功・失敗・キャンセルによって Embed の色が変わります。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-status-discord@v1<span class="w">
-</span><span class="w">  </span><span class="k">if</span><span class="p">:</span><span class="w"> </span>always()<span class="w">
-</span><span class="w">  </span><span class="k">env</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">DISCORD_WEBHOOK</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
-</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">status</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>job.status<span class="w"> </span>}}<span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/actions-status-discord@v1</span><span class="w">
+</span><span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l">always()</span><span class="w">
+</span><span class="w">  </span><span class="nt">env</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">DISCORD_WEBHOOK</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.DISCORD_WEBHOOK }}</span><span class="w">
+</span><span class="w">  </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="l">${{ job.status }}</span><span class="w">
 </span></code></pre></div><p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%203.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%203.png"></p>
 <p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%204.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%204.png"></p>
 </li>
 <li>
 <p>豊富なオプション</p>
 <p>タイトルや説明文、Webhook 投稿ユーザの名前やアイコン変更など、多くのオプションを揃えました。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-status-discord@v1<span class="w">
-</span><span class="w">  </span><span class="k">if</span><span class="p">:</span><span class="w"> </span>always()<span class="w">
-</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">webhook</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
-</span><span class="w">    </span><span class="k">status</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>job.status<span class="w"> </span>}}<span class="w">
-</span><span class="w">    </span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;deploy&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">description</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Build and deploy to GitHub Pages&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">nofail</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span><span class="w">    </span><span class="k">nodetail</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span><span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="m">0x0000ff</span><span class="w">
-</span><span class="w">    </span><span class="k">username</span><span class="p">:</span><span class="w"> </span>GitHub<span class="w"> </span>Actions<span class="w">
-</span><span class="w">    </span><span class="k">avatar_url</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.AVATAR_URL<span class="w"> </span>}}<span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/actions-status-discord@v1</span><span class="w">
+</span><span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l">always()</span><span class="w">
+</span><span class="w">  </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">webhook</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.DISCORD_WEBHOOK }}</span><span class="w">
+</span><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="l">${{ job.status }}</span><span class="w">
+</span><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;deploy&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Build and deploy to GitHub Pages&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">nofail</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">    </span><span class="nt">nodetail</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">    </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="m">0x0000ff</span><span class="w">
+</span><span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">GitHub Actions</span><span class="w">
+</span><span class="w">    </span><span class="nt">avatar_url</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.AVATAR_URL }}</span><span class="w">
 </span></code></pre></div><p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%205.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%205.png"></p>
 <p>詳細情報を一切なくすこともできます。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-status-discord@v1<span class="w">
-</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">webhook</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
-</span><span class="w">    </span><span class="k">nodetail</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">    </span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;We did it!&#34;</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/actions-status-discord@v1</span><span class="w">
+</span><span class="w">  </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">webhook</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.DISCORD_WEBHOOK }}</span><span class="w">
+</span><span class="w">    </span><span class="nt">nodetail</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;We did it!&#34;</span><span class="w">
 </span></code></pre></div><p><img src="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%206.png" alt="Discord%20GitHub%20Actions%20aa7d4e052787407bbd8578c6ecb63766/Untitled%206.png"></p>
 </li>
 <li>

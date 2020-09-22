@@ -160,15 +160,15 @@
 <p><a href="https://github.com/sarisia/tex" target="_blank" rel="noopener">sarisia/tex</a></p>
 <p>実行時は、生の <code>docker</code> コマンドを叩いても良いが、ディレクトリのマウントやコマンドの指定が面倒なので <code>docker-compose.yml</code> を書いておくと楽:</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># paper-env/docker-compose.yml</span><span class="w">
-</span><span class="w"></span><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
-</span><span class="w"></span><span class="k">services</span><span class="p">:</span><span class="w"> 
-</span><span class="w">  </span><span class="k">texlive</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>sarisia/texlive<span class="p">:</span><span class="m">2019</span><span class="w">
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- .<span class="p">:</span>/workspace<span class="p">:</span>cached<span class="w">
-</span><span class="w">    </span><span class="k">working_dir</span><span class="p">:</span><span class="w"> </span>/workspace<span class="w">
-</span><span class="w">    </span><span class="k">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
-</span><span class="w">    </span><span class="k">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&#34;make&#34;</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="w"></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
+</span><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w"> 
+</span><span class="w">  </span><span class="nt">texlive</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/texlive:2019</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">.:/workspace:cached</span><span class="w">
+</span><span class="w">    </span><span class="nt">working_dir</span><span class="p">:</span><span class="w"> </span><span class="l">/workspace</span><span class="w">
+</span><span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+</span><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&#34;make&#34;</span><span class="w"> </span><span class="p">]</span><span class="w">
 </span></code></pre></div><ul>
 <li>
 <p>ワーキングディレクトリをマウントする</p>
@@ -196,48 +196,48 @@
 </span><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span> <span class="s2">&#34;make&#34;</span> <span class="p">]</span><span class="err">
 </span></code></pre></div><p>ビルドスクリプトの実行は <code>ENTRYPOINT</code> で指定すると良い。 <code>ENTRYPOINT</code> をオーバーライドすると  <code>CMD</code> もリセットされるため、おかしな引数が混入することもない。</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># paper-env/.github/actions/latex-ci/action.yml</span><span class="w">
-</span><span class="w"></span><span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;latex ci&#34;</span><span class="w">
-</span><span class="w"></span><span class="k">description</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;build latex documents&#34;</span><span class="w">
+</span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;latex ci&#34;</span><span class="w">
+</span><span class="w"></span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;build latex documents&#34;</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="k">runs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">using</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;docker&#34;</span><span class="w">
-</span><span class="w">  </span><span class="k">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Dockerfile&#34;</span><span class="w">
+</span><span class="w"></span><span class="nt">runs</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">using</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;docker&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Dockerfile&#34;</span><span class="w">
 </span></code></pre></div><p>GitHub Actions は、勝手にディレクトリをマウントし、そのディレクトリをワーキングディレクトリに指定しつつ <code>docker run</code> してくれる。</p>
 <h3 id="ワークフロー">ワークフロー</h3>
 <p>次に、アクションを利用するワークフローを定義する:</p>
 <p><a href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions" target="_blank" rel="noopener">Workflow syntax for GitHub Actions</a></p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># paper-env/.github/workflows/preview.yml</span><span class="w">
-</span><span class="w"></span><span class="k">name</span><span class="p">:</span><span class="w"> </span>preview<span class="w">
-</span><span class="w"></span><span class="k">on</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">push</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">branches</span><span class="p">:</span><span class="w">
+</span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">preview</span><span class="w">
+</span><span class="w"></span><span class="nt">on</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">push</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;master&#34;</span><span class="w">
-</span><span class="w">    </span><span class="k">tags-ignore</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">tags-ignore</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span>- <span class="s2">&#34;**&#34;</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="k">jobs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">preview</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>preview<span class="w">
-</span><span class="w">    </span><span class="k">runs-on</span><span class="p">:</span><span class="w"> </span>ubuntu-latest<span class="w">
-</span><span class="w">    </span><span class="k">steps</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>actions/checkout@v2<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>build<span class="w"> </span>documents<span class="w">
-</span><span class="w">        </span><span class="k">uses</span><span class="p">:</span><span class="w"> </span>./.github/actions/latex-ci<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>deploy<span class="w"> </span>to<span class="w"> </span>preview<span class="w"> </span>branch<span class="w">
-</span><span class="w">        </span><span class="k">uses</span><span class="p">:</span><span class="w"> </span>peaceiris/actions-gh-pages@v3<span class="w">
-</span><span class="w">        </span><span class="k">with</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">github_token</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.GITHUB_TOKEN<span class="w"> </span>}}<span class="w">
-</span><span class="w">          </span><span class="k">publish_dir</span><span class="p">:</span><span class="w"> </span>./preview<span class="w">
-</span><span class="w">          </span><span class="k">publish_branch</span><span class="p">:</span><span class="w"> </span>preview<span class="w">
-</span><span class="w">          </span><span class="k">keep_files</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">          </span><span class="k">commit_message</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;preview:&#34;</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>post<span class="w"> </span>status<span class="w"> </span>to<span class="w"> </span>discord<span class="w">
-</span><span class="w">        </span><span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-status-discord@v1<span class="w">
-</span><span class="w">        </span><span class="k">if</span><span class="p">:</span><span class="w"> </span>always()<span class="w">
-</span><span class="w">        </span><span class="k">with</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">webhook</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>secrets.DISCORD_WEBHOOK<span class="w"> </span>}}<span class="w">
-</span><span class="w">          </span><span class="k">status</span><span class="p">:</span><span class="w"> </span>${{<span class="w"> </span>job.status<span class="w"> </span>}}<span class="w">
-</span><span class="w">          </span><span class="k">job</span><span class="p">:</span><span class="w"> </span>deploy<span class="w"> </span>paper<span class="w"> </span>preview<span class="w">
+</span><span class="w"></span><span class="nt">jobs</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">preview</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">preview</span><span class="w">
+</span><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu-latest</span><span class="w">
+</span><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v2</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">build documents</span><span class="w">
+</span><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">./.github/actions/latex-ci</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">deploy to preview branch</span><span class="w">
+</span><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">peaceiris/actions-gh-pages@v3</span><span class="w">
+</span><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">github_token</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.GITHUB_TOKEN }}</span><span class="w">
+</span><span class="w">          </span><span class="nt">publish_dir</span><span class="p">:</span><span class="w"> </span><span class="l">./preview</span><span class="w">
+</span><span class="w">          </span><span class="nt">publish_branch</span><span class="p">:</span><span class="w"> </span><span class="l">preview</span><span class="w">
+</span><span class="w">          </span><span class="nt">keep_files</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">          </span><span class="nt">commit_message</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;preview:&#34;</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">post status to discord</span><span class="w">
+</span><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/actions-status-discord@v1</span><span class="w">
+</span><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l">always()</span><span class="w">
+</span><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">webhook</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.DISCORD_WEBHOOK }}</span><span class="w">
+</span><span class="w">          </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="l">${{ job.status }}</span><span class="w">
+</span><span class="w">          </span><span class="nt">job</span><span class="p">:</span><span class="w"> </span><span class="l">deploy paper preview</span><span class="w">
 </span></code></pre></div><p><code>actions/checkout</code> と <code>./.github/actions/latex-ci</code> さえ忘れなければあとは自由。</p>
 <p>今回は別ブランチへのコミットとビルド結果の Discord への通知を行っている。</p>
 <h2 id="devcontainer"><code>devcontainer</code></h2>
@@ -253,10 +253,10 @@
 </span><span class="w"></span><span class="c"># Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.</span><span class="w">
 </span><span class="w"></span><span class="c">#-------------------------------------------------------------------------------------------------------------</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;3&#39;</span><span class="w">
-</span><span class="w"></span><span class="k">services</span><span class="p">:</span><span class="w">
+</span><span class="w"></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;3&#39;</span><span class="w">
+</span><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="c"># Update this to the name of the service you want to work with in your docker-compose.yml file</span><span class="w">
-</span><span class="w">  </span><span class="k">texlive</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">texlive</span><span class="p">:</span><span class="w">
 </span><span class="w">    </span><span class="c"># You may want to add a non-root user to your Dockerfile and uncomment the line below</span><span class="w">
 </span><span class="w">    </span><span class="c"># to cause all processes to run as this user. Once present, you can also simply</span><span class="w">
 </span><span class="w">    </span><span class="c"># use the &#34;remoteUser&#34; property in devcontainer.json if you just want VS Code and</span><span class="w">
@@ -274,9 +274,9 @@
 </span><span class="w">    </span><span class="c"># ports:</span><span class="w">
 </span><span class="w">    </span><span class="c">#   - 3000:3000</span><span class="w">
 </span><span class="w">      
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span><span class="c"># Update this to wherever you want VS Code to mount the folder of your project</span><span class="w">
-</span><span class="w">      </span>- .<span class="p">:</span>/workspace<span class="p">:</span>cached<span class="w">
+</span><span class="w">      </span>- <span class="l">.:/workspace:cached</span><span class="w">
 </span><span class="w">
 </span><span class="w">      </span><span class="c"># Uncomment the next line to use Docker from inside the container. See https://aka.ms/vscode-remote/samples/docker-in-docker-compose for details.</span><span class="w">
 </span><span class="w">      </span><span class="c"># - /var/run/docker.sock:/var/run/docker.sock </span><span class="w">
@@ -288,7 +288,7 @@
 </span><span class="w">    </span><span class="c">#   - seccomp:unconfined</span><span class="w">
 </span><span class="w">
 </span><span class="w">    </span><span class="c"># Overrides default command so things don&#39;t shut down after the process ends.</span><span class="w">
-</span><span class="w">    </span><span class="k">command</span><span class="p">:</span><span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&#34;while sleep 1000; do :; done&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l">/bin/sh -c &#34;while sleep 1000; do :; done&#34;</span><span class="w">
 </span></code></pre></div></li>
 </ul>
 <p>VSCode 外で頑張って起動したいなら:</p>

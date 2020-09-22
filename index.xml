@@ -6,10 +6,15 @@
     <description>Recent content on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Sep 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Wed, 23 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GitHub ActionsでICU依存の関数を使うな</title>
+      <link>https://note.sarisia.cc/entry/github-actions-icu/</link>
+      <pubDate>Wed, 23 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/github-actions-icu/</guid>
+      <description>TL;DR GitHub Actions の JavaScript アクションは small-icu オプションでビルドされた Node.js 12 で走るので ICU 依存の関数がまともな結果を返さない. ワークアラウンドはあるが, ユーザーの操作</description>
+    </item>
     
     <item>
       <title>GitHub Actions で真偽値を正しく扱う</title>

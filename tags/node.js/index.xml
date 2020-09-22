@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Node.js on loop.run_forever()</title>
+    <link>https://note.sarisia.cc/tags/node.js/</link>
+    <description>Recent content in Node.js on loop.run_forever()</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 23 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/tags/node.js/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GitHub ActionsでICU依存の関数を使うな</title>
+      <link>https://note.sarisia.cc/entry/github-actions-icu/</link>
+      <pubDate>Wed, 23 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/github-actions-icu/</guid>
+      <description>TL;DR GitHub Actions の JavaScript アクションは small-icu オプションでビルドされた Node.js 12 で走るので ICU 依存の関数がまともな結果を返さない. ワークアラウンドはあるが, ユーザーの操作</description>
+    </item>
+    
+  </channel>
+</rss>

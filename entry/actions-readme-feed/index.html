@@ -112,39 +112,39 @@
 </span><span class="gu"></span><span class="c">&lt;!-- feed start --&gt;</span>
 <span class="c">&lt;!-- feed end --&gt;</span>
 </code></pre></div><p><code>.github/workflows/</code> 以下のワークフローにステップを追加します. コミットまではやらないので気合で頑張ります. <a href="https://github.com/marketplace/actions/add-commit" target="_blank" rel="noopener">この辺</a>のアクションを使うと楽かもしれません&hellip;:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">steps</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>actions/checkout@v2<span class="w">
-</span><span class="w">  </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-readme-feed@v1<span class="w">
-</span><span class="w">    </span><span class="k">with</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">url</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;https://note.sarisia.cc/index.xml&#39;</span><span class="w">
-</span><span class="w">      </span><span class="k">file</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;README.md&#39;</span><span class="w">
-</span><span class="w">  </span>- <span class="k">run</span><span class="p">:</span><span class="w"> </span><span class="sd">|
-</span><span class="sd">      git config --global user.name &#34;${{ github.actor }}&#34;</span><span class="w">
-</span><span class="w">      </span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&#34;${{ github.actor }}@users.noreply.github.com&#34;</span><span class="w">
-</span><span class="w">      </span>git<span class="w"> </span>add<span class="w"> </span>.<span class="w">
-</span><span class="w">      </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&#34;docs: update feed&#34;</span><span class="w"> </span>||<span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">      </span>git<span class="w"> </span>push<span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v2</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/actions-readme-feed@v1</span><span class="w">
+</span><span class="w">    </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;https://note.sarisia.cc/index.xml&#39;</span><span class="w">
+</span><span class="w">      </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;README.md&#39;</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="sd">|
+</span><span class="sd">      git config --global user.name &#34;${{ github.actor }}&#34;
+</span><span class="sd">      git config --global user.email &#34;${{ github.actor }}@users.noreply.github.com&#34;
+</span><span class="sd">      git add .
+</span><span class="sd">      git commit -m &#34;docs: update feed&#34; || true
+</span><span class="sd">      git push
 </span></code></pre></div><p>プロフィールページにブログの投稿が追加されます！</p>
 <p><img src="Untitled.png" alt="Untitled.png"></p>
 <h2 id="応用編">応用編</h2>
 <h3 id="qiita-の表示">Qiita の表示</h3>
 <p><code>https://qiita.com/[username]/feed</code> でRSSフィードが取れるので<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, これを <code>url</code> として渡します:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-readme-feed@v1<span class="w">
-</span><span class="w">  </span><span class="k">with</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">url</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;https://qiita.com/sarisia/feed&#39;</span><span class="w">
-</span><span class="w">    </span><span class="k">file</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;README.md&#39;</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/actions-readme-feed@v1</span><span class="w">
+</span><span class="w">  </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;https://qiita.com/sarisia/feed&#39;</span><span class="w">
+</span><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;README.md&#39;</span><span class="w">
 </span></code></pre></div><h3 id="自動更新">自動更新</h3>
 <p>Workflow を <code>schedule</code> で回してあげれば自動更新できます:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">on</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">schedule</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="k">cron</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0 */6 * * *&#39;</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">on</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0 */6 * * *&#39;</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="k">jobs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">readme</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">runs-on</span><span class="p">:</span><span class="w"> </span>ubuntu-latest<span class="w">
-</span><span class="w">    </span><span class="k">steps</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>actions/checkout@v2<span class="w">
-</span><span class="w">      </span>- <span class="k">uses</span><span class="p">:</span><span class="w"> </span>sarisia/actions-readme-feed@v1<span class="w">
+</span><span class="w"></span><span class="nt">jobs</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">readme</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu-latest</span><span class="w">
+</span><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v2</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">sarisia/actions-readme-feed@v1</span><span class="w">
 </span></code></pre></div><h1 id="まとめ">まとめ</h1>
 <p>出力のテンプレート機能やフラグ変更など, もっと高度なカスタマイズも出来るようになっているので, <a href="https://github.com/sarisia/actions-readme-feed" target="_blank" rel="noopener">リポジトリページ</a>も参考に是非使ってみてください！</p>
 <section class="footnotes" role="doc-endnotes">
