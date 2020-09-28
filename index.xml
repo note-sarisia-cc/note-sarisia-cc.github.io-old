@@ -6,14 +6,23 @@
     <description>Recent content on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 23 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 27 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GitHub Actions ランタイムを多言語化するアクションを作った</title>
+      <link>https://note.sarisia.cc/entry/github-actions-setup-icu/</link>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/github-actions-setup-icu/</guid>
+      <description>TL;DR GitHub Actions が使う Node.js 12 にフルの ICU データセットを自動でインストールするアクションを作った。 Data.prototype.toLocaleString() などのロケールを考慮する関数が英語以外の言語のロケールで</description>
+    </item>
+    
     <item>
       <title>GitHub ActionsでICU依存の関数を使うな</title>
       <link>https://note.sarisia.cc/entry/github-actions-icu/</link>
       <pubDate>Wed, 23 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/entry/github-actions-icu/</guid>
-      <description>TL;DR GitHub Actions の JavaScript アクションは small-icu オプションでビルドされた Node.js 12 で走るので ICU 依存の関数がまともな結果を返さない. ワークアラウンドはあるが, ユーザーの操作</description>
+      <description>2020/09/27 追記 この記事で紹介したワークアラウンドを自動化するアクションを作りました: GitHub Actions ランタイムを多言語化するアクションを作った TL;DR GitHub Actions の JavaScript アクショ</description>
     </item>
     
     <item>

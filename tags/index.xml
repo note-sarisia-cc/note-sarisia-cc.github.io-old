@@ -6,11 +6,11 @@
     <description>Recent content in Tags on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 23 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 27 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GitHub</title>
       <link>https://note.sarisia.cc/tags/github/</link>
-      <pubDate>Wed, 23 Sep 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/tags/github/</guid>
       <description></description>
@@ -19,9 +19,18 @@
     <item>
       <title>GitHub Actions</title>
       <link>https://note.sarisia.cc/tags/github-actions/</link>
-      <pubDate>Wed, 23 Sep 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/tags/github-actions/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nodejs</title>
+      <link>https://note.sarisia.cc/tags/nodejs/</link>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/nodejs/</guid>
       <description></description>
     </item>
     

@@ -12,13 +12,13 @@
 	
     
     
-    <meta name="description" content="TL;DR GitHub Actions の JavaScript アクションは small-icu オプションでビルドされた Node.js 12 で走るので ICU 依存の関数がまともな結果を返さない. ワークアラウンドはあるが, ユーザーの操作" />
+    <meta name="description" content="2020/09/27 追記 この記事で紹介したワークアラウンドを自動化するアクションを作りました: GitHub Actions ランタイムを多言語化するアクションを作った TL;DR GitHub Actions の JavaScript アクショ" />
     
 
     
 
     <meta property="og:title" content="GitHub ActionsでICU依存の関数を使うな" />
-<meta property="og:description" content="TL;DR GitHub Actions の JavaScript アクションは small-icu オプションでビルドされた Node.js 12 で走るので ICU 依存の関数がまともな結果を返さない. ワークアラウンドはあるが, ユーザーの操作" />
+<meta property="og:description" content="2020/09/27 追記 この記事で紹介したワークアラウンドを自動化するアクションを作りました: GitHub Actions ランタイムを多言語化するアクションを作った TL;DR GitHub Actions の JavaScript アクショ" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://note.sarisia.cc/entry/github-actions-icu/" />
 <meta property="article:published_time" content="2020-09-23T00:00:00+00:00" />
@@ -97,7 +97,10 @@
                         <h2><a href='/entry/github-actions-icu/'>GitHub ActionsでICU依存の関数を使うな</a></h2>
                         <span class="date">2020.09.23</span>
                     </div>
-                    <div class="post_content markdown"><h1 id="tldr">TL;DR</h1>
+                    <div class="post_content markdown"><h3 id="20200927-追記">2020/09/27 追記</h3>
+<p>この記事で紹介したワークアラウンドを自動化するアクションを作りました:</p>
+<p><a href="https://note.sarisia.cc/entry/github-actions-setup-icu" target="_blank" rel="noopener">GitHub Actions ランタイムを多言語化するアクションを作った</a></p>
+<h1 id="tldr">TL;DR</h1>
 <p>GitHub Actions の JavaScript アクションは <code>small-icu</code> オプションでビルドされた Node.js 12 で走るので <code>ICU</code> 依存の関数がまともな結果を返さない. ワークアラウンドはあるが, ユーザーの操作が必要.</p>
 <h1 id="概要">概要</h1>
 <p><a href="https://github.com/sarisia/actions-readme-feed" target="_blank" rel="noopener">actions-readme-feed</a> に日付のフォーマットに用いるロケールを変える機能を実装したが, GitHub Actions 上ではどのロケールにしても常に英語が出力されてしまったので原因を調べた.</p>
