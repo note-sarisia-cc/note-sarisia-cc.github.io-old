@@ -105,15 +105,15 @@
 </ul>
 <h1 id="概要">概要</h1>
 <p>値を真偽値 <code>true</code> と比較する以下の <code>if</code> のうち, 条件が真と判定されるのは1つだけ:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="l">== true # false</span><span class="w">
-</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="w"> </span><span class="l">== true # false</span><span class="w">
-</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="l">== true # TRUE!</span><span class="w">
-</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="w"> </span><span class="l">== true # false</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="l">== true</span><span class="w"> </span><span class="c"># false</span><span class="w">
+</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="w"> </span><span class="l">== true</span><span class="w"> </span><span class="c"># false</span><span class="w">
+</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="l">== true</span><span class="w"> </span><span class="c"># TRUE!</span><span class="w">
+</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="w"> </span><span class="l">== true</span><span class="w"> </span><span class="c"># false</span><span class="w">
 </span></code></pre></div><p>似たように, 値を文字列 <code>'true'</code> と比較する以下の <code>if</code> でも, 条件が真となるのは1つだけ:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="l">== &#39;true&#39; # TRUE!</span><span class="w">
-</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="w"> </span><span class="l">== &#39;true # false</span><span class="w">
-</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="l">== &#39;true&#39; # false</span><span class="w">
-</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="w"> </span><span class="l">== &#39;true&#39; # false</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="l">== &#39;true&#39;</span><span class="w"> </span><span class="c"># TRUE!</span><span class="w">
+</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="w"> </span><span class="l">== &#39;true</span><span class="w"> </span><span class="c"># false</span><span class="w">
+</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="l">== &#39;true&#39;</span><span class="w"> </span><span class="c"># false</span><span class="w">
+</span><span class="w"></span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="w"> </span><span class="l">== &#39;true&#39;</span><span class="w"> </span><span class="c"># false</span><span class="w">
 </span></code></pre></div><p>つまり, GitHub Actions は表現に対して型厳密な比較を行う.</p>
 <h2 id="当たり前だが">当たり前だが&hellip;</h2>
 <p>型厳密な比較は当たり前だが, 加えて, GitHub Actions にはいくつかハマりどころが用意されている.</p>
@@ -125,7 +125,7 @@
 <p>等価比較 (<code>==</code>, <code>!=</code>) において, 左辺と右辺の型が異なる場合, 比較の前に暗黙的な型変換が行われる.</p>
 <p>Actions では, 全ての型を数値に変換する. 変換ルールは上記ページの通りだが, もっとも注意すべきなのは <strong>stringは数値へパースされる</strong> 点である. つまり, <code>'1'</code> などの文字列は, 数値の <code>1</code> へ暗黙的に変換される.</p>
 <p>上記の例で,</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="l">== true # TRUE!</span><span class="w">
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="l">== true</span><span class="w"> </span><span class="c"># TRUE!</span><span class="w">
 </span></code></pre></div><p>が真と評価されたのもこれが理由である. 左辺の <code>'1'</code> は文字列からパースされた数値 <code>1</code> となり, 右辺の <code>true</code> はキャストルールに基づいて <code>1</code> となる.</p>
 <h3 id="複数のキャストルールの存在">複数のキャストルールの存在</h3>
 <p>前述の等価比較の際のキャストルールの他に, ビルトイン関数内でのキャストルールが別に存在しており, 非常に<strong>紛らわしい.</strong></p>

@@ -118,12 +118,12 @@
 </span><span class="w">    </span><span class="nt">with</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;https://note.sarisia.cc/index.xml&#39;</span><span class="w">
 </span><span class="w">      </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;README.md&#39;</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="sd">|
+</span><span class="w">  </span>- <span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
 </span><span class="sd">      git config --global user.name &#34;${{ github.actor }}&#34;
 </span><span class="sd">      git config --global user.email &#34;${{ github.actor }}@users.noreply.github.com&#34;
 </span><span class="sd">      git add .
 </span><span class="sd">      git commit -m &#34;docs: update feed&#34; || true
-</span><span class="sd">      git push
+</span><span class="sd">      git push</span><span class="w">      
 </span></code></pre></div><p>プロフィールページにブログの投稿が追加されます！</p>
 <p><img src="Untitled.png" alt="Untitled.png"></p>
 <h2 id="応用編">応用編</h2>
