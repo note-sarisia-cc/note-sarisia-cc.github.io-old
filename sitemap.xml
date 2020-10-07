@@ -8,11 +8,6 @@
   </url>
   
   <url>
-    <loc>https://note.sarisia.cc/entry/customizing-codespaces/</loc>
-    <lastmod>2020-10-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://note.sarisia.cc/tags/devcontainer/</loc>
     <lastmod>2020-10-07T00:00:00+00:00</lastmod>
   </url>
@@ -24,6 +19,11 @@
   
   <url>
     <loc>https://note.sarisia.cc/tags/github/</loc>
+    <lastmod>2020-10-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://note.sarisia.cc/entry/customizing-codespaces/</loc>
     <lastmod>2020-10-07T00:00:00+00:00</lastmod>
   </url>
   
