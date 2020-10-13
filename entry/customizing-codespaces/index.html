@@ -12,13 +12,13 @@
 	
     
     
-    <meta name="description" content="GitHub Codespaces は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービスです. 現在はプライベートベータ版が提供されて" />
+    <meta name="description" content="2020/10/13 追記: Codespaces 上で dotfiles の挙動が変更できることを追記 GitHub Codespaces は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービス" />
     
 
     
 
     <meta property="og:title" content="GitHub Codespaces カスタマイズのコツ" />
-<meta property="og:description" content="GitHub Codespaces は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービスです. 現在はプライベートベータ版が提供されて" />
+<meta property="og:description" content="2020/10/13 追記: Codespaces 上で dotfiles の挙動が変更できることを追記 GitHub Codespaces は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービス" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://note.sarisia.cc/entry/customizing-codespaces/" />
 <meta property="article:published_time" content="2020-10-07T00:00:00+00:00" />
@@ -97,7 +97,8 @@
                         <h2><a href='/entry/customizing-codespaces/'>GitHub Codespaces カスタマイズのコツ</a></h2>
                         <span class="date">2020.10.07</span>
                     </div>
-                    <div class="post_content markdown"><p><a href="https://github.com/features/codespaces" target="_blank" rel="noopener">GitHub Codespaces</a> は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービスです. 現在はプライベートベータ版が提供されています.</p>
+                    <div class="post_content markdown"><p>2020/10/13 追記: Codespaces 上で dotfiles の挙動が変更できることを追記</p>
+<p><a href="https://github.com/features/codespaces" target="_blank" rel="noopener">GitHub Codespaces</a> は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービスです. 現在はプライベートベータ版が提供されています.</p>
 <p>Codespaces は, 開発環境のカスタマイズの自由度が非常に高いことが特徴です. devcontainer を用いた環境定義ができる他, dotfiles リポジトリの自動適用や VSCode Settings Sync の設定など, コンテナ環境からエディタの設定まで, ほぼすべてをカスタマイズすることができます.</p>
 <p>一方で, Codespaces は, そのカスタマイズの自由度の高さ故に, 何も考えずに利用すると, 意図しない設定が適用されて Codespaces が起動しなかったり挙動がおかしくなったりします.</p>
 <p>今回は, 私が Codespaces ベータ版を一ヶ月ほど使ってきた中で失敗した事例と, カスタマイズの際に考えるべきことを紹介します.</p>
@@ -132,7 +133,13 @@
 </li>
 </ul>
 <p>もし, 今までに <code>dotfiles</code> を GitHub 上で管理していた場合, それらは意図せず Codespaces の初期化に利用される場合があります.</p>
-<h2 id="対処法-codespaces-環境変数を用いる">対処法: <code>$CODESPACES</code> 環境変数を用いる</h2>
+<h2 id="対処法1-codespaces-上で設定する">対処法1. Codespaces 上で設定する</h2>
+<p>2020/10/13追記</p>
+<p>起動した Codespaces 上の VSCode の設定に, Dotfiles 関連の設定があるようなので, それを使うと
+制御できるかもしれません (試していません).</p>
+<p><img src="dotfiles-configure.png" alt="dotfiles-configure"></p>
+<p>追記終</p>
+<h2 id="対処法2--codespaces-環境変数を用いる">対処法2. : <code>$CODESPACES</code> 環境変数を用いる</h2>
 <p>最も手っ取り早い方法はインストールスクリプトの名前を変更してしまうことですが, 以前より用いている物にあまり手を入れたくありません. この場合, インストールスクリプトの中で <code>$CODESPACES</code> 環境変数によって動作を変更することができます.</p>
 <p>Codespaces は, コンテナ起動時に環境変数 <code>CODESPACES=true</code> を設定してくれます. これを利用して, インストールスクリプト内で:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="k">if</span> <span class="o">[[</span> <span class="s2">&#34;</span><span class="nv">$CODESPACES</span><span class="s2">&#34;</span> <span class="o">==</span>  <span class="nb">true</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>

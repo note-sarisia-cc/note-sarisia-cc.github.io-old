@@ -13,7 +13,7 @@
       <pubDate>Wed, 07 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/entry/customizing-codespaces/</guid>
-      <description>GitHub Codespaces は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービスです. 現在はプライベートベータ版が提供されて</description>
+      <description>2020/10/13 追記: Codespaces 上で dotfiles の挙動が変更できることを追記 GitHub Codespaces は, ブラウザから利用できる Visual Studio Code をワンクリックで起動してくれる最高のクラウド開発環境サービス</description>
     </item>
     
   </channel>
