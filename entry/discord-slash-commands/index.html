@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title>Slash CommandsでサーバレスなDiscordアプリを作る ｜ loop.run_forever()</title>
+	
+    
+    
+    <meta name="description" content="あけましておめでとうございます. 昨年の暮, 12月中旬頃, 突然に Discord の Slash Commands パブリックベータがリリースされました！ ユーザが Bot の機能を利用する際の UX" />
+    
+
+    
+
+    <meta property="og:title" content="Slash CommandsでサーバレスなDiscordアプリを作る" />
+<meta property="og:description" content="あけましておめでとうございます. 昨年の暮, 12月中旬頃, 突然に Discord の Slash Commands パブリックベータがリリースされました！ ユーザが Bot の機能を利用する際の UX" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://note.sarisia.cc/entry/discord-slash-commands/" />
+<meta property="article:published_time" content="2021-01-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-01-03T00:00:00+00:00" />
+
+
+	
+    
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://note.sarisia.cc/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/entry/">POSTS</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">TAGS</a>
+            </li>
+            
+            <li>
+                <a href="https://sarisia.cc/">SARISIA.CC</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://note.sarisia.cc/">
+                    <span>loop.run_forever()</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/sarisia" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                
+                <a href="https://twitter.com/A1ces" title="twitter" target="_blank"><i class="ri-twitter-fill"></i></a>
+                
+                
+                <a href="https://note.sarisia.cc/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/entry/discord-slash-commands/'>Slash CommandsでサーバレスなDiscordアプリを作る</a></h2>
+                        <span class="date">2021.01.03</span>
+                    </div>
+                    <div class="post_content markdown"><p>あけましておめでとうございます.</p>
+<p>昨年の暮, 12月中旬頃, 突然に Discord の Slash Commands パブリックベータがリリースされました！</p>
+<p>ユーザが Bot の機能を利用する際の UX 改善はもちろん, 開発者にとっても構造化されたコマンド情報の取得や Webhook コールバックのサポートなど, ただのコマンド機能に留まらず, Discord での新しいアプリのあり方を定義する大胆な機能追加です.</p>
+<p>今回は, Slash Commands とその API について, 概要とその実装例を紹介します.</p>
+<h1 id="slash-commands">Slash Commands</h1>
+<p><a href="https://discord.com/developers/docs/interactions/slash-commands" target="_blank" rel="noopener">Discord Developer Portal - API Docs for Bots and Developers</a></p>
+<h2 id="概要">概要</h2>
+<p>従来の Discord API には, Bot がコマンドを実装するための公式な仕組みがありませんでした. そのため, Bot の機能を呼び出すために, ユーザはコマンドやパラメータを覚え, テキストとして気合で入力し送信, 開発者は受信したテキストを気合で処理することで擬似的なコマンド呼び出しを実現していました.</p>
+<p>新しい Slash Commands は, Discord 上のアプリ (Bot) を開発・利用する新しい仕組みです. Slash Commands を実装することで, ユーザは Discord クライアント上で以下のようなヘルプ・入力補完を用いてアプリの機能を呼び出すことが出来ます:</p>
+<p><img src="Slash%20Commands%E3%81%A6%E3%82%99%E3%82%B5%E3%83%BC%E3%83%8F%E3%82%99%E3%83%AC%E3%82%B9%E3%81%AADiscord%E3%82%A2%E3%83%95%E3%82%9A%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B%209434c0ae99414f14ac3a200d2cad20bc/Untitled.png" alt="Slash%20Commands%E3%81%A6%E3%82%99%E3%82%B5%E3%83%BC%E3%83%8F%E3%82%99%E3%83%AC%E3%82%B9%E3%81%AADiscord%E3%82%A2%E3%83%95%E3%82%9A%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B%209434c0ae99414f14ac3a200d2cad20bc/Untitled.png"></p>
+<p>そして開発者は, ユーザのコマンド入力を構造化されたデータとして受け取ることができ, また, 容易に応答メッセージを作成することが出来ます.</p>
+<h2 id="特徴">特徴</h2>
+<p>Slash Commands がどんな物なのか確認したところで, より具体的な特徴を紹介します:</p>
+<ul>
+<li>
+<p>Discord クライアント上でアプリの持つ機能を確認することができる</p>
+<p>ユーザは <code>/</code> をテキストフィールドに入力することで, 利用可能なコマンド, その説明を一覧することが出来ます.</p>
+</li>
+<li>
+<p>Discord クライアント上でのヘルプ・入力補完 + 型を持つコマンドパラメータの指定</p>
+<p>ユーザがコマンドをテキストフィールドに入力する際, 画面上にパラメータやその説明を表示することが可能です. また, 各パラメータには &ldquo;必須であるか&rdquo; や, <code>STRING</code> , <code>BOOLEAN</code> , <code>USER</code> , <code>CHANNEL</code> 等の値の型, 長さやデフォルト値などの制約を指定することができ, ユーザが追加の入力補完を受けることができるほか, 開発者は Discord によってバリデーションされたユーザの入力を受け取ることができます.</p>
+</li>
+<li>
+<p>Webhook でのインタラクション受信</p>
+<p>従来の Discord API では, ユーザの入力に対してリアルタイムに応答するためには, WebSocket を用いて &ldquo;Gateway API&rdquo; に接続し, 常にサーバとの接続を維持する必要がありました. Slash Commands API では, Gateway API によるインタラクション (コマンド入力) の受信に加えて, 開発者があらかじめ指定したコールバックエンドポイントを叩いてくれる Webhook による受信を選択できるようになりました. これにより, サーバレスな Discord Bot を実装することが可能になり, 常に Gateway API に張り付くプロセスが不要になりました！</p>
+</li>
+<li>
+<p>新しい OAuth2 スコープ, Bot アカウントが不要に</p>
+<p>Slash Commands のリリースに合わせて, Discord API に新しい OAuth2 スコープ <code>applications.commands</code> が追加されました. Slash Commands を利用するには, この <code>applications.commands</code> スコープが必須であるかわりに, <code>bot</code> スコープは不要です. つまり, サーバに Bot ユーザを追加せずともユーザのコマンド入力に応答することが可能になりました！</p>
+<p>(もちろん, 既存の Bot トークンを用いてコマンド関連のリソースを操作することも可能です.)</p>
+</li>
+</ul>
+<p>いかがでしょうか. Discord アプリのあり方を変える, かなり大胆な機能追加であることが感じ取れると思います.</p>
+<h1 id="サーバレスなdiscordアプリを作る">サーバレスなDiscordアプリを作る</h1>
+<p>やはり新機能は実際に触ってみないと楽しくありません. シンプルなサーバレスの Slash Commands アプリケーションを作成してみましょう.</p>
+<h2 id="構成">構成</h2>
+<p><code>/hello</code> コマンドを作成します.</p>
+<p><code>/hello</code> コマンドは <code>USER</code> 型のオプション <code>user</code> を取ります.</p>
+<p>呼び出し例はこんな感じです:</p>
+<p><img src="Slash%20Commands%E3%81%A6%E3%82%99%E3%82%B5%E3%83%BC%E3%83%8F%E3%82%99%E3%83%AC%E3%82%B9%E3%81%AADiscord%E3%82%A2%E3%83%95%E3%82%9A%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B%209434c0ae99414f14ac3a200d2cad20bc/Untitled%201.png" alt="Slash%20Commands%E3%81%A6%E3%82%99%E3%82%B5%E3%83%BC%E3%83%8F%E3%82%99%E3%83%AC%E3%82%B9%E3%81%AADiscord%E3%82%A2%E3%83%95%E3%82%9A%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B%209434c0ae99414f14ac3a200d2cad20bc/Untitled%201.png"></p>
+<p><a href="https://aws.amazon.com/jp/serverless/sam/" target="_blank" rel="noopener">AWS SAM</a> (Lambda + API Gateway (HTTP API)) を用いて, Discord からのコールバックを受け取る HTTP POST エンドポイントを作成します.</p>
+<p>Lambda のランタイムは <code>python3.8</code> です. また, デプロイパッケージの作成やデプロイに <a href="https://github.com/aws/aws-sam-cli" target="_blank" rel="noopener">aws-sam-cli</a> を利用します.</p>
+<p>ソースコードは以下です:</p>
+<p><a href="https://github.com/sarisia/discord-slash-commands-helloworld" target="_blank" rel="noopener">sarisia/discord-slash-commands-helloworld: Hello Discord Slash Commands!</a></p>
+<h2 id="実装">実装</h2>
+<h3 id="リクエストの検証">リクエストの検証</h3>
+<p>コールバックが叩かれた際に, リクエストを処理する前に, そのリクエストが本当に Discord から送られたものかを検証する必要があります.</p>
+<p><strong>必ず行ってください！</strong> Discord へのコールバック登録時に<strong>テストリクエストが複数回飛んでくる</strong>ため, 検証をスキップすると Discord に怒られます. テストアプリだからといってサボらないようにしましょう. (1敗)</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="c1"># API Gateway has weird case conversion, so we need to make them lowercase.</span>
+    <span class="c1"># See https://github.com/aws/aws-sam-cli/issues/1860</span>
+    <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;headers&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="p">}</span>
+    <span class="n">rawBody</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span>
+
+    <span class="c1"># validate request</span>
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x-signature-ed25519&#39;</span><span class="p">)</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x-signature-timestamp&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">verify</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">rawBody</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&#34;cookies&#34;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&#34;isBase64Encoded&#34;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s2">&#34;statusCode&#34;</span><span class="p">:</span> <span class="mi">401</span><span class="p">,</span>
+            <span class="s2">&#34;headers&#34;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&#34;body&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span>
+        <span class="p">}</span>
+</code></pre></div><p>Discord からのリクエストには <code>X-Signature-Ed25519</code> と <code>X-Signature-Timestamp</code> の2つのヘッダが含まれています. これらを用いて, リクエストの署名を検証します.</p>
+<p>検証には <code>pynacl</code> (<code>libsodium</code> の Python バインディング) を利用します:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">nacl.signing</span> <span class="kn">import</span> <span class="n">VerifyKey</span>
+
+<span class="n">APPLICATION_PUBLIC_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;APPLICATION_PUBLIC_KEY&#39;</span><span class="p">)</span>
+<span class="n">verify_key</span> <span class="o">=</span> <span class="n">VerifyKey</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">APPLICATION_PUBLIC_KEY</span><span class="p">))</span>
+</code></pre></div><p><code>verify()</code> で実際の検証をします:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="n">signature</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">verify_key</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;{timestamp}{body}&#34;</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">signature</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;failed to verify request: {e}&#34;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+</code></pre></div><p>タイムスタンプとリクエストボディを結合したバイト列を, 事前に Discord より取得した公開鍵 (<code>APPLICATION_PUBLIC_KEY</code>) を用いて検証します.  公開鍵は後のステップで Discord Developer Portal より取得します.</p>
+<p>検証に失敗した場合は異常なリクエストなので, 処理を中断して HTTP <code>401</code> を返す必要があります.</p>
+<h3 id="インタラクションを処理する">インタラクションを処理する</h3>
+<p>Discord から届くインタラクションには現状 <code>Ping</code> と <code>ApplicationCommand</code> の2種類があります.</p>
+<p><code>Ping</code> は, 開発者が Discord Developer Portal からアプリケーションにコールバックを登録しようとする際に届き, 定められた値を JSON で返す必要があります. 以下のような JSON が届きます:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+    <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;795057182634541057&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;...&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div><p>処理するコードは以下です:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="n">req</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">rawBody</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># InteractionType.Ping</span>
+        <span class="n">registerCommands</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="mi">1</span> <span class="c1"># InteractionResponseType.Pong</span>
+        <span class="p">}</span>
+</code></pre></div><p><code>ApplicationCommand</code> は, 実際にユーザがコマンドを実行した際に届きます. レスポンスとしてメッセージを返すことが可能です.</p>
+<p><code>/hello</code> コマンドを <code>user</code> オプションを指定して実行すると, 以下のような JSON が届きます:</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+    <span class="nt">&#34;channel_id&#34;</span><span class="p">:</span> <span class="s2">&#34;...&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;data&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;791946542370127923&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;hello&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;options&#34;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;user&#34;</span><span class="p">,</span>
+                <span class="nt">&#34;value&#34;</span><span class="p">:</span> <span class="s2">&#34;318221692206055424&#34;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="nt">&#34;guild_id&#34;</span><span class="p">:</span> <span class="s2">&#34;...&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;794678001563861062&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;member&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;deaf&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&#34;is_pending&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&#34;joined_at&#34;</span><span class="p">:</span> <span class="s2">&#34;2018-11-07T07:48:32.373000+00:00&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;mute&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&#34;nick&#34;</span><span class="p">:</span> <span class="s2">&#34;Sarisia&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;pending&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&#34;permissions&#34;</span><span class="p">:</span> <span class="s2">&#34;...&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;premium_since&#34;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&#34;roles&#34;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&#34;...&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;...&#34;</span>
+        <span class="p">],</span>
+        <span class="nt">&#34;user&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;avatar&#34;</span><span class="p">:</span> <span class="s2">&#34;42a6a8902f7540b04546b7ee24c272fc&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;discriminator&#34;</span><span class="p">:</span> <span class="s2">&#34;5572&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;316911818725392384&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;public_flags&#34;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+            <span class="nt">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;sarisia&#34;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;...&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div><p>以下のようなコードで処理します:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="k">elif</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># InteractionType.ApplicationCommand</span>
+        <span class="c1"># command options list -&gt; dict</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;options&#39;</span><span class="p">]}</span> <span class="k">if</span> <span class="s1">&#39;options&#39;</span> <span class="ow">in</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">{}</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&#34;Hello!&#34;</span>
+        <span class="k">if</span> <span class="s1">&#39;user&#39;</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&#34;Hello, &lt;@{opts[&#39;user&#39;]}&gt;!&#34;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="c1"># InteractionResponseType.ChannelMessageWithSource</span>
+            <span class="s2">&#34;data&#34;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="n">text</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+</code></pre></div><p>レスポンスの <code>type</code> にも複数ありますが, ここでは <code>4 (ChannelMessageWithSource)</code> で応答しています. 外にも, ユーザの入力メッセージを削除しつつ応答する <code>ChannelMessage</code> や, 応答メッセージを返さない <code>Acknowledge</code> 等で応答することもできます.</p>
+<h3 id="コマンドの登録">コマンドの登録</h3>
+<p>作成したコマンドを実行できるようにするには, Discord にコマンドの情報を登録する必要があります. 今回はテスト目的のため, <code>Ping</code> インタラクションが届いたとき, つまり Discord Developer Portal からコールバックを登録したタイミングで <code>registerCommands()</code> を叩いてコマンドを登録していますが, 実際にはコードのデプロイ時や, アプリがギルドに追加されたとき等, 様々なタイミングが考えられます.</p>
+<p><code>registerCommands</code> のコードです:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">registerCommands</span><span class="p">():</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&#34;{DISCORD_ENDPOINT}/applications/{APPLICATION_ID}/guilds/{COMMAND_GUILD_ID}/commands&#34;</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;registering commands: {endpoint}&#34;</span><span class="p">)</span>
+
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;hello&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Hello Discord Slash Commands!&#34;</span><span class="p">,</span>
+            <span class="s2">&#34;options&#34;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="c1"># ApplicationCommandOptionType.USER</span>
+                    <span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;user&#34;</span><span class="p">,</span>
+                    <span class="s2">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Who to say hello?&#34;</span><span class="p">,</span>
+                    <span class="s2">&#34;required&#34;</span><span class="p">:</span> <span class="bp">False</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span> <span class="s2">&#34;discord-slash-commands-helloworld&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;Content-Type&#34;</span><span class="p">:</span> <span class="s2">&#34;application/json&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;Authorization&#34;</span><span class="p">:</span> <span class="n">DISCORD_TOKEN</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+        <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+</code></pre></div><p>コマンドには,</p>
+<ul>
+<li>アプリケーションに紐付き, アプリケーションが追加されている全てのギルドで利用可能な <code>global command</code></li>
+<li>アプリケーションとギルドのペアに紐付き, アプリケーションが追加されている特定のギルドでのみ利用可能な <code>guild command</code></li>
+</ul>
+<p>の2種類があります. 前者は登録されたコマンドが実際に利用可能になるまで最大1時間かかりますが, 後者は即時に利用可能になることが保証されているため, 今回は後者を登録します. 両者の登録の方法における違いはエンドポイント (<code>endpoint</code>) の違いのみです.</p>
+<p>コマンドは, 名前, 説明やオプション (任意) で構成されます. オプションは, 型, 名前, 説明のほかに, 必須かどうか, デフォルト値や選択肢を設定することが出来ます. 今回は, <code>6 (USER)</code> 型のオプションを設定したことで, ユーザは Discord クライアント上でユーザ一覧などの入力補助を受けることができます.</p>
+<p>Discord へのリクエスト認証は <code>DISCORD_TOKEN</code> トークンで行います. トークンは, アクセストークンを <code>Bearer &lt;token&gt;</code> で利用してもいいですし, Discord Developer Portal で取得できる Bot トークンを <code>Bot &lt;token&gt;</code> で利用することもできます. 今回は楽に取得できる Bot トークンを利用します.</p>
+<h2 id="デプロイ">デプロイ</h2>
+<p>コードができたので, 実際にデプロイして動かしてみましょう！</p>
+<h3 id="discordから必要な情報を得る">Discordから必要な情報を得る</h3>
+<p>Discord アプリの動作には, 以下の情報が必要です:</p>
+<ul>
+<li>
+<p>Application ID (Client ID)</p>
+<p>アプリケーションを一意に識別する ID です. コマンドの登録の際に利用します.</p>
+</li>
+<li>
+<p>Public Key</p>
+<p>Discord からのリクエストの署名検証に用いる公開鍵です.</p>
+</li>
+<li>
+<p>Discord Token</p>
+<p>Discord のトークンです. コマンド登録の際に利用します. アクセストークン, または Bot トークンが利用できます.</p>
+</li>
+<li>
+<p>Guild ID</p>
+<p>ギルド (サーバ) を一意に識別する ID です. <code>guild command</code> を登録する際に利用します.</p>
+</li>
+</ul>
+<p>これらの情報は, Discord Developer Portal から得ることが出来ます. 取ってきましょう！</p>
+<p><a href="https://discord.com/developers/applications" target="_blank" rel="noopener">Discord Developer Portal - API Docs for Bots and Developers</a></p>
+<p><img src="Slash%20Commands%E3%81%A6%E3%82%99%E3%82%B5%E3%83%BC%E3%83%8F%E3%82%99%E3%83%AC%E3%82%B9%E3%81%AADiscord%E3%82%A2%E3%83%95%E3%82%9A%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B%209434c0ae99414f14ac3a200d2cad20bc/Untitled%202.png" alt="Slash%20Commands%E3%81%A6%E3%82%99%E3%82%B5%E3%83%BC%E3%83%8F%E3%82%99%E3%83%AC%E3%82%B9%E3%81%AADiscord%E3%82%A2%E3%83%95%E3%82%9A%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B%209434c0ae99414f14ac3a200d2cad20bc/Untitled%202.png"></p>
+<h3 id="applicationcommands-スコープを取得する"><code>application.commands</code> スコープを取得する</h3>
+<p>冒頭で述べたとおり, Slash Commands は <code>bot</code> スコープだけでは動作せず, 新たに <code>application.commands</code> スコープが必要です. 以下の URL を叩いてアプリケーションのギルドでのスコープを更新しましょう. <strong><code>&lt;YOUR_CLIENT_ID_HERE&gt;</code> を Application ID で置き換えてください！</strong></p>
+<p><code>https://discord.com/api/oauth2/authorize?client_id=&lt;YOUR_CLIENT_ID_HERE&gt;&amp;scope=applications.commands</code></p>
+<h3 id="lambda関数をデプロイ">Lambda関数をデプロイ</h3>
+<p>関数をデプロイしましょう.</p>
+<p>SAM CLI を利用するなら:</p>
+<pre><code>$ sam build
+$ sam deploy --guided
+---出力
+</code></pre><p>で簡単にデプロイできます. デプロイ中にトークンや公開鍵などの必要な情報を聞かれるので, 前のステップで取得した値を入力してください.</p>
+<h3 id="アプリにコールバックurlを登録">アプリにコールバックURLを登録</h3>
+<p>Lambda関数をデプロイすると, エンドポイントのURLが得られます. これを Discord Developer Portal で <code>INTERACTIONS ENDPOINT URL</code> として登録します.</p>
+<p>登録した情報を保存する際に, コールバックに検証リクエストが複数回送信されます. もし保存がエラーになる場合は, 実装やデプロイがうまく行っていない可能性があります.</p>
+<h3 id="動作確認">動作確認</h3>
+<p>ここまでで, Discord 上でコマンドが実行できるようになっていると思います. 実際にコマンドを実行し, 動作確認をしましょう.</p>
+<h1 id="おわりに">おわりに</h1>
+<p>少し長くなりましたが, Discord に新しく実装された Slash Commands の概要とサンプルコマンドの実装例を紹介しました.</p>
+<p>個人的には, サーバレスでイベント駆動な Discord Bot を書けるようになったのが非常に嬉しい反面, クライアントの自動補完がうまく働かなかったり, リクエストの <code>options</code> の配列がやや扱いづらかったりと, まだ荒削りな部分もあると感じました.</p>
+<p>ベータを抜ける日が楽しみですね！</p>
+</div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="/tags/aws/">AWS</a>
+                                    
+                                    <a href="/tags/discord/">Discord</a>
+                                    
+                                    <a href="/tags/lambda/">Lambda</a>
+                                    
+                                    <a href="/tags/python/">Python</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+<link href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+<script src="/js/zozo.js"></script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-99257943-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
