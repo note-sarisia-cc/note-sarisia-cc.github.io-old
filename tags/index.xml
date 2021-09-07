@@ -125,24 +125,6 @@
     </item>
     
     <item>
-      <title>Linux</title>
-      <link>https://note.sarisia.cc/tags/linux/</link>
-      <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://note.sarisia.cc/tags/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>UTF-8</title>
-      <link>https://note.sarisia.cc/tags/utf-8/</link>
-      <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://note.sarisia.cc/tags/utf-8/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Markdown</title>
       <link>https://note.sarisia.cc/tags/markdown/</link>
       <pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate>
@@ -175,6 +157,15 @@
       <pubDate>Sat, 08 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://note.sarisia.cc/tags/arch-linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://note.sarisia.cc/tags/linux/</link>
+      <pubDate>Sat, 08 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/tags/linux/</guid>
       <description></description>
     </item>
     
