@@ -6,7 +6,16 @@
     <description>Recent content on loop.run_forever()</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 03 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://note.sarisia.cc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gmail から iCloud カスタムドメインメールを扱えなかった</title>
+      <link>https://note.sarisia.cc/entry/you-cannot-gmailify-icloud-customdomain/</link>
+      <pubDate>Tue, 12 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://note.sarisia.cc/entry/you-cannot-gmailify-icloud-customdomain/</guid>
+      <description>こんにちは. 最近, Apple One 契約者の iCloud+ 自動アップグレードが始まり1, 誰でも iCloud メールのカスタムメールドメイン2が使えるようになったみたいです. カスタ</description>
+    </item>
+    
     <item>
       <title>Slash CommandsでサーバレスなDiscordアプリを作る</title>
       <link>https://note.sarisia.cc/entry/discord-slash-commands/</link>
